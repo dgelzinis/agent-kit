@@ -95,7 +95,7 @@ Parallel work on a big issue: `/k-lead #12` splits it into sub-issues; `kit work
 
 ## 6. All commands
 
-Every kit skill starts with `k-`, so it cannot collide with a tool's built-in commands (plain `/review`, `/plan`, `/debug`, `/security-review` are built-ins that do something else). Claude Code: `/k-<name>` (type `/k-` to see them all). Codex: `$k-<name>`, or pick from `/skills`. Any other agent: tell it to read `~/GIT/agent-kit/skills/k-<name>/SKILL.md` and follow it. To look them up: `kit help` in a terminal, the cheat sheet at the top of `README.md`, or ask the agent "what can the kit do?".
+Every kit skill starts with `k-`, so it cannot collide with a tool's built-in commands (plain `/review`, `/plan`, `/debug`, `/security-review` are built-ins that do something else). Claude Code: `/k-<name>` (type `/k-` to see them all). Codex: `$k-<name>`, or pick from `/skills`. Gemini CLI: say "activate the k-<name> skill" (it asks permission; check with `/skills list`). Any other agent: tell it to read `~/GIT/agent-kit/skills/k-<name>/SKILL.md` and follow it. To look them up: `kit help` in a terminal, the cheat sheet at the top of `README.md`, or ask the agent "what can the kit do?".
 
 | Command | Use it for |
 |---|---|

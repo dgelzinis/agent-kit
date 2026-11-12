@@ -1,12 +1,52 @@
 # agent-kit
 
-One place for how I work with coding agents (Claude Code, Codex, Gemini) across all projects.
+One place for how I work with coding agents (Claude Code, Codex, Gemini CLI) across all my projects: the rules, the workflow as skills, per-technology knowledge, and the checks that enforce it.
 
-**Full guide: [docs/GUIDE.md](docs/GUIDE.md)** — layers, setup, daily flow, all commands, how changes reach projects, measuring and improving.
+Write it once here; every project and every tool picks it up. Deeper detail for each section is in **[docs/GUIDE.md](docs/GUIDE.md)**.
 
-## Cheat sheet
+## Contents
 
-Every kit skill starts with `k-`. In Claude Code type `/k-` and the picker lists them all; in Codex type `$k-<name>` or pick from `/skills`. In a terminal, `kit help` prints the list. Or ask the agent: "what can the kit do?"
+1. [How it works](#how-it-works)
+2. [Quick start](#quick-start)
+3. [Cheat sheet: which skill when](#cheat-sheet-which-skill-when)
+4. [The daily flow](#the-daily-flow)
+5. [Using it in each tool](#using-it-in-each-tool)
+6. [Making a project different](#making-a-project-different)
+7. [What is enforced](#what-is-enforced)
+8. [Parallel work with several agents](#parallel-work-with-several-agents)
+9. [Lessons, measuring and improving](#lessons-measuring-and-improving)
+10. [Changing the kit](#changing-the-kit)
+11. [What's in this folder](#whats-in-this-folder)
+12. [Troubleshooting](#troubleshooting)
+
+## How it works
+
+Three layers. Each adds to the one above and wins where they disagree.
+
+| Layer | Where | Holds |
+|---|---|---|
+| **Kit** | `AGENTS.md`, `skills/` (this folder) | How I work: issue → plan → branch → pull request → review; safety rules; the skills |
+| **Stack packs** | `stacks/` (this folder) | Rules and traps per technology: Supabase, React/Vite, Node/Express, Next.js |
+| **Project** | `<project>/AGENTS.md` | That project's facts: mode, stacks, commands, architecture, rules, skill settings, release steps |
+
+The kit is **linked** into each tool, not copied. `install.sh` creates the links, so an edit here is live in every project's next agent session.
+
+## Quick start
+
+**On a computer (once):**
+```sh
+git clone https://github.com/dgelzinis/agent-kit.git ~/GIT/agent-kit   # skip where the folder already exists
+cd ~/GIT/agent-kit && sh install.sh
+brew install gh && gh auth login                                        # if not done yet
+kit help                                                                # check: lists the skills
+```
+`install.sh` links the rules and skills into Claude Code, Codex and Gemini CLI, adds Claude Code permissions (block reading secrets, allow reading the kit), and installs the `kit` command. It backs up anything it replaces to `~/.agent-kit-backup/` and is safe to run again.
+
+**In a project (once per project):** start an agent in the project and run `/k-setup-project`. It detects the stack, suggests a mode, writes a short project `AGENTS.md`, adds CI and templates, asks a few questions for the skill settings, installs the pre-commit hook, and opens a pull request for you to review.
+
+## Cheat sheet: which skill when
+
+Every kit skill starts with `k-`. To look them up: type `/k-` in Claude Code, run `kit help` in a terminal, or ask the agent "what can the kit do?"
 
 | When you… | Use |
 |---|---|
@@ -26,58 +66,118 @@ Every kit skill starts with `k-`. In Claude Code type `/k-` and the picker lists
 | want this project stricter, softer or different | `/k-tune` |
 | want to improve the kit itself (monthly) | `/k-retro` |
 
-The names avoid the tools' own commands on purpose: plain `/review`, `/plan`, `/debug` and `/security-review` are built into Claude Code or Codex and do something else.
+Terminal helper: `kit help` · `kit work <issue>` · `kit done <issue>` · `kit list` · `kit hooks` · `kit stats [--all] [--days N]`
 
-Other tools: the skills are plain Markdown in the open `SKILL.md` format and the rules are a plain `AGENTS.md`. Codex and Gemini CLI pick them up from `~/.agents/skills` and their global rules file (`install.sh` links both). Any other agent can use a skill by being told to read `~/GIT/agent-kit/skills/k-<name>/SKILL.md` and follow it. Claude-only extras: the reviewer subagent and the secret-file deny rules.
+The `k-` prefix is deliberate: plain `/review`, `/plan`, `/debug` and `/security-review` are built into Claude Code or Codex and do something else.
+
+## The daily flow
+
+The same in every project and every tool.
+
+| Step | You say / do | What happens |
+|---|---|---|
+| Start | start the agent, then `/k-next` | Unfinished work and the last handoff, open pull requests, top ready issues |
+| Pick | "work on #12" | Branch `12-…`, issue labelled `in-progress` |
+| Plan | `/k-plan` | Plan posted on the issue; the agent waits for your OK |
+| Build | "ok" | Code and tests; the project's checks pass |
+| Pull request | `/k-ship` | Extra checks the project requires, then a pull request with `Closes #12`; CI runs |
+| Review | new terminal, fresh session: `/k-review` | Verdict posted on the pull request; the builder fixes blockers |
+| Look | you | Click through it on phone and laptop |
+| Merge | you (`gh pr merge --squash --delete-branch`) | Deploys; the issue closes |
+| Stop mid-task | `/k-handoff` | Where things stand, saved on the issue for the next session |
+| Release | `/k-release`, when you choose | Security check, release pull request, tag, GitHub release with notes |
+
+Work lives in GitHub Issues. Agents never merge and never release on their own.
+
+## Using it in each tool
+
+| Tool | Call a skill | Check it is loaded |
+|---|---|---|
+| Claude Code | `/k-next` | type `/k-` |
+| Codex | `$k-next`, or pick from `/skills` | `/skills` |
+| Gemini CLI | "activate the k-next skill" (it asks permission) | `/skills list` |
+| Anything else | "read `~/GIT/agent-kit/skills/k-next/SKILL.md` and follow it" | n/a |
+
+The skills are plain Markdown in the open `SKILL.md` format and the rules are a plain `AGENTS.md`, so nothing is tied to one vendor. Claude-only extras: the reviewer subagent (`claude/agents/reviewer.md`) and the rules that block reading secret files. Projects contain a `CLAUDE.md` with one line, `@AGENTS.md`, because Claude Code does not read `AGENTS.md` by itself.
+
+## Making a project different
+
+Skills are the same everywhere; the project decides how they behave. Three dials, all in the project's `AGENTS.md`:
+
+1. **Mode** (first line): `Mode: product | prototype | sandbox`. Product = full process. Prototype = branches, lighter planning and review. Sandbox = safety rules only. No mode means product.
+2. **Stacks**: `Stacks: react-vite, node-express, supabase`. Agents read only those packs from `stacks/`.
+3. **Skill settings**: one short block per skill that needs something different.
+
+```markdown
+## Skill settings
+
+### /k-security
+Level: strict. Run on every pull request touching the backend, database or AI calls.
+
+### /k-content
+Voice: docs/brand/voice.md. Calm, plain, never hype.
+```
+
+Every skill reads its block first. Settings add steps or tighten rules; they never loosen the safety rules. Create or change them with `/k-tune` (it asks a few questions and writes the section after your OK). Never copy a kit skill into a project to change it; for a truly different process, write a project skill with a new name in `<project>/.agents/skills/`.
+
+## What is enforced
+
+| Check | Where | What it does |
+|---|---|---|
+| Pre-commit hook | each repo: `kit hooks` (once per clone) | Blocks commits on `main` in product and prototype projects, and commits with `.env` files, key files, anything under `private/`, or lines that look like live keys |
+| Claude Code deny rules | `~/.claude/settings.json` (from `install.sh`) | Claude cannot read `.env`, `private/` or key files |
+| CI | each repo's `.github/workflows` | Lint, build and tests on every pull request |
+| Dependabot | each product repo | Pull requests for security updates |
+| Branch protection | GitHub → Settings → Rules | `main` accepts only pull requests with green checks |
+
+Bypass the hook only when you mean it: `KIT_ALLOW_MAIN=1 git commit …` or `KIT_ALLOW_SECRET=1 git commit …`. A test fixture that must contain a key-shaped string gets the comment `kit:allow-secret` on that line. Agents are told never to bypass it without your OK.
+
+## Parallel work with several agents
+
+For a feature too big for one agent: `/k-lead #12` proposes sub-issues that do not touch the same files, with their dependencies. After your OK it creates them and tells you to run `kit work <sub-issue>` (a separate worktree and branch) and start an agent in each. `/k-lead status` shows who is done, blocked or in conflict. The lead never writes product code and never merges. Keep it to 2–3 workers: you are the one reviewing and merging, and each agent costs its own tokens.
+
+## Lessons, measuring and improving
+
+- **Lessons:** when a bug teaches something general, the agent records symptom → cause → fix → prevention on the issue and labels it `lesson`. Where it ends up: project code → a test or lint rule; a technology → its stack pack; how agents work → this kit.
+- **Friction:** when a kit rule or skill gets in the way, or you correct an agent on how to work, it opens an issue in this repo labelled `friction`.
+- **Numbers:** `kit stats` (current repo) or `kit stats --all` (every product and prototype project): merged pull requests, hours to merge, size, review blockers, CI failures, bugs, lessons, security findings.
+- **Monthly:** start an agent in this folder and run `/k-retro`. It measures, reads lessons and friction, checks whether last month's changes helped, and opens a pull request with at most 3 changes plus a `retro` issue with next month's targets. You approve. It never loosens the safety rules.
+
+## Changing the kit
+
+| You change… | What to do |
+|---|---|
+| A skill, a stack pack or `AGENTS.md` | Save, commit, push. Live in every project's next session. |
+| Add or rename a skill | Also list it in `AGENTS.md` → Skills and run `sh install.sh` once (here, not per project). |
+| Templates in `templates/project/` | Nothing for new projects. Existing projects keep their copies; `/k-setup-project` can update one. |
+
+Keep it small: about 15 skills, each well under 80 lines; stack packs under 40 lines. Undo a change with `git revert <commit>`.
+
+When Claude edits the kit from a cloud session it cannot overwrite `AGENTS.md` (it is Claude's live rules file) and saves `AGENTS.new.md` instead; apply it with `mv AGENTS.new.md AGENTS.md`.
 
 ## What's in this folder
 
-- `AGENTS.md` — global rules, loaded by every agent in every project.
-- `skills/` — the workflow, as slash commands: `/k-next`, `/k-plan`, `/k-ship`, `/k-review`, `/k-release`, `/k-lead`, `/k-setup-project`, plus `/k-debug`, `/k-handoff`, `/k-security`, `/k-design-check`, `/k-content`, `/k-db-change`, and `/k-retro` (monthly improvement).
-- Project modes — each project's `AGENTS.md` starts with `Mode: product | prototype | sandbox`; the global rules relax accordingly (see `AGENTS.md` → Project mode).
-- `stacks/` — stack packs: short rules per technology (supabase, react-vite, node-express, nextjs). Projects list theirs in `Stacks:`.
-- `claude/agents/reviewer.md` — the reviewer as a Claude Code subagent.
-- `templates/project/` — what `/k-setup-project` puts in a repo: project `AGENTS.md`, `CLAUDE.md`, CI, issue and PR templates (in `github/`, copied into a repo as `.github/`).
-- `bin/kit` — helper: worktrees for parallel work, `kit hooks`, `kit stats`.
-- `hooks/pre-commit` — blocks commits on `main` and commits containing secrets; install per repo with `kit hooks`.
-- `install.sh` — links all of it into each tool. Run again after pulling changes.
+| Path | What it is |
+|---|---|
+| `AGENTS.md` | Global rules for every agent in every project |
+| `skills/k-*/SKILL.md` | The 15 skills |
+| `stacks/` | Stack packs: `supabase`, `react-vite`, `node-express`, `nextjs` |
+| `claude/agents/reviewer.md` | The reviewer as a Claude Code subagent |
+| `hooks/pre-commit` | The pre-commit check installed by `kit hooks` |
+| `bin/kit`, `bin/kit-stats.mjs` | The `kit` terminal helper |
+| `templates/project/` | What `/k-setup-project` puts in a repo: `AGENTS.md`, `CLAUDE.md`, and `github/` (copied in as `.github/`: CI, issue and pull request templates, Dependabot) |
+| `install.sh` | Links everything into each tool |
+| `docs/GUIDE.md` | The full guide |
 
-## Install (once per computer)
-```sh
-cd ~/GIT/agent-kit
-git init && git add -A && git commit -m "chore: agent-kit v1"   # first time only; then push to a private GitHub repo
-sh install.sh
-brew install gh && gh auth login                                # if not done yet
-```
+## Troubleshooting
 
-## The flow (same in every project and every tool)
-| Step | You say / do | What happens |
-|---|---|---|
-| Start | `claude` or `codex`, then `/k-next` | Unfinished work, open PRs, top ready issues |
-| Pick | "work on #12" | Branch `12-…`, issue labelled `in-progress` |
-| Plan | `/k-plan` | Plan posted on the issue; agent waits for your OK |
-| Build | "ok" | Code + tests, project checks pass |
-| PR | `/k-ship` | Pushed, PR opened with `Closes #12`, CI runs |
-| Review | new terminal, fresh session: `/k-review` | Blockers / should fix / nits; builder fixes blockers |
-| Look | you | Click through the preview or local build, phone + laptop |
-| Merge | you (`gh pr merge --squash --delete-branch`) | Deploys, issue closes |
-| Release | `/k-release`, when you choose | Release PR → tag → GitHub release with notes |
-
-Along the way: `/k-debug` for bugs (failing test first), `/k-design-check` before shipping UI, `/k-content` for any text, `/k-security` before releases and on auth/payment/data changes, `/k-handoff` when you stop mid-task.
-
-## Parallel work (optional)
-`/k-lead #12` splits a big issue into sub-issues that don't touch the same files, then tells you to run
-`kit work <sub-issue>` and start `claude`/`codex` in each worktree. Ask the lead `/k-lead status` any time.
-Keep it to 2–3 workers; you are the one reviewing and merging.
-
-## Measuring and improving
-- `kit stats` (this repo) or `kit stats --all` (every product/prototype project): merged PRs, hours to merge, PR size, review blockers, CI failures, bugs, lessons, security findings.
-- Agents label issues `lesson` when a bug teaches something general, and open `friction` issues here when a kit rule or skill gets in the way.
-- Once a month, in this folder: start an agent and run `/k-retro`. It measures, finds patterns, and opens a PR with at most 3 kit changes plus a `retro` issue with next month's targets. You approve.
-- One-time setup of this repo's labels: `gh label create friction --color FBCA04 && gh label create retro --color 1D76DB`.
-
-## Changing the kit
-The kit is linked into every tool, not copied: a change here applies in every project's next agent session. No per-project step. Only a **new** skill needs `sh install.sh` once. Details: [docs/GUIDE.md → How changes reach your projects](docs/GUIDE.md#2-how-changes-reach-your-projects).
-
-Edit a skill or `AGENTS.md`, commit, done — every project picks it up in its next session (they are links).
-New skill: add `skills/<name>/SKILL.md`, list it in `AGENTS.md`, run `sh install.sh`.
+| Problem | Fix |
+|---|---|
+| A skill is not listed in the tool | Run `sh install.sh`, then start a **new** session. Gemini CLI: `gemini skills link ~/GIT/agent-kit/skills`. |
+| `/review` or `/plan` did something unexpected | Those are the tool's built-ins. Kit skills are `/k-review`, `/k-plan`. |
+| `kit: command not found` | Add `export PATH="$HOME/.local/bin:$PATH"` to `~/.zshrc`, open a new terminal. |
+| Commit blocked on `main` | Intended. `git switch -c <issue>-<name>` and commit there. |
+| Commit blocked for a secret that is not one | `KIT_ALLOW_SECRET=1 git commit …`, or mark the line `kit:allow-secret`. |
+| `gh` errors about login or scope | `gh auth login`; for workflow files `gh auth refresh -s workflow`. |
+| A rule changed but the agent ignores it | Running sessions keep what they loaded. Start a new one. |
+| Want the old global files back | They are in `~/.agent-kit-backup/<time>/`. |
