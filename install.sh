@@ -50,10 +50,12 @@ for f in "$KIT"/claude/agents/*.md; do
   echo "  $(basename "$f" .md)"
 done
 
-echo "Claude Code secret protection (~/.claude/settings.json)"
-node - "$HOME/.claude/settings.json" <<'EOF'
+echo "Claude Code permissions (~/.claude/settings.json): block secrets, allow reading the kit"
+node - "$HOME/.claude/settings.json" "$KIT" "$HOME" <<'EOF'
 const fs = require('fs');
 const file = process.argv[2];
+const kit = process.argv[3], home = process.argv[4];
+const kitRead = kit.startsWith(home + '/') ? `Read(~/${kit.slice(home.length + 1)}/**)` : `Read(/${kit}/**)`;
 let s = {};
 if (fs.existsSync(file)) {
   try { s = JSON.parse(fs.readFileSync(file, 'utf8')); }
@@ -66,6 +68,8 @@ const deny = [
 s.permissions = s.permissions || {};
 const before = new Set(s.permissions.deny || []);
 s.permissions.deny = [...before, ...deny.filter(d => !before.has(d))];
+const allow = new Set(s.permissions.allow || []);
+if (!allow.has(kitRead)) s.permissions.allow = [...allow, kitRead];
 fs.mkdirSync(require('path').dirname(file), { recursive: true });
 fs.writeFileSync(file, JSON.stringify(s, null, 2) + '\n');
 console.log(`  ${s.permissions.deny.length - before.size} deny rules added`);

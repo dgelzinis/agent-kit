@@ -31,4 +31,6 @@ Do not read memory/ledger/roadmap files. Do not edit files.
    ### Nits (optional)
    ```
    No findings in a section → write "None". Do not pad.
-4. If the user agrees, post it: `gh pr review <n> --comment --body-file <review.md>`.
+   The `Verdict:` line must be exactly one of `Verdict: BLOCKED`, `Verdict: OK WITH FIXES`, `Verdict: OK` — `kit stats` counts it.
+4. Post it on the PR: `gh pr comment <n> --body-file <review.md>` (comments are what the metrics read).
+5. A blocker that reveals a pattern (not a one-off) → suggest the label `lesson` on the issue and say where the prevention belongs.

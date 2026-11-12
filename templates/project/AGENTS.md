@@ -1,5 +1,8 @@
 # <Project name> — project facts
 
+Mode: product   <!-- product | prototype | sandbox — see ~/GIT/agent-kit/AGENTS.md → Project mode -->
+Stacks: <e.g. react-vite, node-express, supabase>   <!-- packs in ~/GIT/agent-kit/stacks/ -->
+
 Global working rules come from `~/GIT/agent-kit/AGENTS.md`. This file adds what is specific to this project and wins where they differ.
 
 ## Product
@@ -27,6 +30,13 @@ Run from the repo root.
 ## Rules
 Only rules that are specific to this project and not obvious from the code. Prefer turning a rule into a test or lint rule; keep a line here only until it is enforced.
 -
+
+## Design and voice
+- Design rules: <path, e.g. docs/brand/design-system.md> (used by `/design-check`)
+- Voice: <path, e.g. docs/brand/voice.md> (used by `/content`)
+
+## Database
+- Schema doc: <path> · Migrations: <folder, naming e.g. v<N>_<name>.sql> · Applied by: <owner, where/how>
 
 ## Docs that must stay true
 Which docs to update when related code changes (e.g. math/formula docs, API docs).
