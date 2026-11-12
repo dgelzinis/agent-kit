@@ -1,9 +1,9 @@
 ---
-name: retro
-description: Monthly improvement run for the agent-kit — measure how the workflow performed across projects, turn lessons and friction into tests, rules or kit changes, and check whether last month's changes helped. Use when the user says /retro or on the monthly schedule.
+name: k-retro
+description: Monthly improvement run for the agent-kit — measure how the workflow performed across projects, turn lessons and friction into tests, rules or kit changes, and check whether last month's changes helped. Use when the user says /k-retro or on the monthly schedule.
 ---
 
-# /retro — measure, learn, improve the kit
+# /k-retro — measure, learn, improve the kit
 
 Run from `~/GIT/agent-kit`. Output is a pull request to this repo that the owner approves. Never merge it yourself.
 
@@ -19,7 +19,7 @@ Run from `~/GIT/agent-kit`. Output is a pull request to this repo that the owner
 
 ## 2. Collect what went wrong
 - Friction: `gh issue list -R <owner>/agent-kit --label friction --state open --json number,title,body`.
-- Lessons: in each active project, `gh issue list --label lesson --state all --search "updated:>=<30 days ago>" --json number,title,body,comments`.
+- Lessons: in each active project (the repos `kit stats --all` listed: folders under `~/GIT` whose `AGENTS.md` says `Mode: product` or `prototype`), `gh issue list --label lesson --state all --search "updated:>=<30 days ago>" --json number,title,body,comments`.
 - Review findings: blocker comments from the reviewer (`Verdict: BLOCKED`) — what kinds of problems recur?
 
 ## 3. Find patterns

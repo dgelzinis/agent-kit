@@ -37,6 +37,16 @@ link "$KIT/AGENTS.md" "$HOME/.codex/AGENTS.md"
 link "$KIT/AGENTS.md" "$HOME/.gemini/GEMINI.md"
 
 echo "Skills"
+# Remove links left by skills that were renamed or deleted in the kit (only links that point into this kit).
+for d in "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.claude/agents"; do
+  [ -d "$d" ] || continue
+  for l in "$d"/*; do
+    [ -L "$l" ] || continue
+    case "$(readlink "$l")" in
+      "$KIT"/*) [ -e "$l" ] || { rm "$l"; echo "  removed old link $(basename "$l")"; } ;;
+    esac
+  done
+done
 for dir in "$KIT"/skills/*/; do
   name=$(basename "$dir")
   link "$KIT/skills/$name" "$HOME/.agents/skills/$name"

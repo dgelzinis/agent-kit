@@ -45,8 +45,9 @@ function stats(dir) {
   const runs = gh(dir, ['run', 'list', '--limit', '200', '--created', `>=${sinceDay}`, '--json', 'conclusion']) || [];
   const done = runs.filter((r) => r.conclusion);
   const failed = done.filter((r) => r.conclusion === 'failure').length;
-  const count = (label) => (gh(dir, ['issue', 'list', '--state', 'all', '--label', label, '--limit', '200',
-    '--search', `created:>=${sinceDay}`, '--json', 'number']) || []).length;
+  const numbers = (label) => (gh(dir, ['issue', 'list', '--state', 'all', '--label', label, '--limit', '200',
+    '--search', `created:>=${sinceDay}`, '--json', 'number']) || []).map((i) => i.number);
+  const count = (...labels) => new Set(labels.flatMap(numbers)).size;
   return {
     merged: prs.length,
     medianHoursToMerge: round(median(hours)),
@@ -54,7 +55,7 @@ function stats(dir) {
     reviewedShare: prs.length ? `${Math.round((100 * reviewed) / prs.length)}%` : '—',
     blockedReviews: blocked,
     ciFailureRate: done.length ? `${Math.round((100 * failed) / done.length)}%` : '—',
-    bugs: count('bug') + count('regression'),
+    bugs: count('bug', 'regression'),
     lessons: count('lesson'),
     security: count('security'),
   };

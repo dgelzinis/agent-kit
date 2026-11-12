@@ -1,9 +1,11 @@
 ---
-name: content
-description: Write or edit product and website text (headlines, page copy, buttons, emails, posts) in the project's voice, offering options for the owner to choose. Use when the user says /content or asks for copy.
+name: k-content
+description: Write or edit product and website text (headlines, page copy, buttons, emails, posts) in the project's voice, offering options for the owner to choose. Use when the user says /k-content or asks for copy.
 ---
 
-# /content — words in the project's voice
+# /k-content — words in the project's voice
+
+> **Project settings first:** if the project's `AGENTS.md` has `## Skill settings` → `### /k-content`, read it and apply it on top of this skill. Settings add steps or tighten rules; they never loosen the kit's Safety rules.
 
 1. **Voice.** Read the project's voice file (`AGENTS.md` names it; usually `docs/brand/voice.md`). If there is none, draft one first (audience, tone, words to use and avoid, 2–3 good examples from the product) and ask the user to confirm it — then save it for next time.
 2. **Brief.** Be clear on: where the text appears, who reads it, the one thing it must achieve, length limits (button, headline, meta description…), language(s).

@@ -1,0 +1,57 @@
+#!/bin/sh
+# agent-kit pre-commit hook. Installed per repository with `kit hooks`.
+#  1. Blocks commits on main/master in product and prototype projects (work goes through a branch and a PR).
+#  2. Blocks commits that add secret files or lines that look like live keys.
+# Bypass, only with the owner's OK:
+#   KIT_ALLOW_MAIN=1 git commit …      commit on main this once
+#   KIT_ALLOW_SECRET=1 git commit …    the match is not a real secret
+#   a line containing  kit:allow-secret  is never flagged (for test fixtures)
+
+root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+
+# --- 1. no commits on main -------------------------------------------------
+branch=$(git symbolic-ref --short -q HEAD || true)
+mode=$(sed -n 's/^Mode:[[:space:]]*\([a-z]*\).*/\1/p' "$root/AGENTS.md" 2>/dev/null | head -1)
+[ -n "$mode" ] || mode=product
+if [ -z "$KIT_ALLOW_MAIN" ] && [ "$mode" != sandbox ] && git rev-parse -q --verify HEAD >/dev/null 2>&1; then
+  case "$branch" in
+    main|master)
+      echo "agent-kit: commits on '$branch' are blocked in $mode mode."
+      echo "  Move this work to a branch:  git switch -c <issue>-<short-name>"
+      echo "  (Owner only, this once:      KIT_ALLOW_MAIN=1 git commit …)"
+      exit 1 ;;
+  esac
+fi
+
+# --- 2. no secrets ----------------------------------------------------------
+[ -n "$KIT_ALLOW_SECRET" ] && exit 0
+
+PATTERN='(sk|rk)_live_[0-9A-Za-z]{10,}|whsec_[0-9A-Za-z]{16,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|gh[pousr]_[0-9A-Za-z]{30,}|github_pat_[0-9A-Za-z_]{30,}|xox[baprs]-[0-9A-Za-z-]{10,}|sk-(ant|proj)-[0-9A-Za-z_-]{20,}|AIza[0-9A-Za-z_-]{35}|sb_secret_[0-9A-Za-z_-]{20,}|SERVICE_ROLE(_KEY)?["'"'"' ]*[=:]["'"'"' ]*eyJ[0-9A-Za-z_-]{20,}'
+
+found=$(mktemp)
+trap 'rm -f "$found"' EXIT
+
+git diff --cached --name-only --diff-filter=ACMR | while IFS= read -r f; do
+  base=$(basename "$f")
+  case "$base" in
+    .env.example|.env.sample|.env.template) ;;
+    .env|.env.*|*.pem|*.p12|*.pfx|id_rsa|id_ed25519|*.keystore)
+      echo "  $f  (secret file: should not be committed)" >>"$found"; continue ;;
+  esac
+  case "$f" in
+    private/*|*/private/*) echo "  $f  (inside a private/ folder)" >>"$found"; continue ;;
+  esac
+  if git diff --cached -U0 --no-color -- "$f" | grep '^+' | grep -v '^+++' | grep -v 'kit:allow-secret' | grep -Eq -e "$PATTERN"; then
+    echo "  $f  (a line looks like a live key or private key)" >>"$found"
+  fi
+done
+
+if [ -s "$found" ]; then
+  echo "agent-kit: this commit looks like it contains secrets:"
+  cat "$found"
+  echo "  Remove them (git restore --staged <file>) and keep secrets in .env files outside git."
+  echo "  If a key was real, replace it at the provider: it has been on disk in plain text."
+  echo "  (False alarm, owner only:   KIT_ALLOW_SECRET=1 git commit …)"
+  exit 1
+fi
+exit 0

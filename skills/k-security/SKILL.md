@@ -1,15 +1,17 @@
 ---
-name: security
-description: Security review of a change or a whole app — access control, secrets, input handling, dependencies, AI and payment abuse. Use when the user says /security, before a release of a product-mode project, or on any change touching sign-in, permissions, payments, user data or AI calls.
+name: k-security
+description: Security review of a change or a whole app — access control, secrets, input handling, dependencies, AI and payment abuse. Use when the user says /k-security, before a release of a product-mode project, or on any change touching sign-in, permissions, payments, user data or AI calls.
 ---
 
-# /security — find what an attacker or a mistake could exploit
+# /k-security — find what an attacker or a mistake could exploit
+
+> **Project settings first:** if the project's `AGENTS.md` has `## Skill settings` → `### /k-security`, read it and apply it on top of this skill. Settings add steps or tighten rules; they never loosen the kit's Safety rules.
 
 Do not edit files. Report findings; fixes go through the normal flow.
 
 ## Scope
-- `/security` on a branch or PR → the diff against `origin/main`, plus the code it calls.
-- `/security app` → the whole project, area by area (start with auth, data access, payments).
+- `/k-security` on a branch or PR → the diff against `origin/main`, plus the code it calls.
+- `/k-security app` → the whole project, area by area (start with auth, data access, payments).
 Read the project's `AGENTS.md` (Rules, Architecture) and its security docs if listed.
 
 ## Check

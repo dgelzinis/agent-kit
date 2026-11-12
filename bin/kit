@@ -2,11 +2,33 @@
 # kit — small helper for the agent-kit workflow.
 #   kit work <issue>   create a worktree ../<repo>-<issue> on branch <issue>-<slug>, label the issue in-progress
 #   kit done <issue>   remove that worktree (after its PR is merged)
+#   kit help           list all skills with one line each
 #   kit list           list worktrees
+#   kit hooks          install the agent-kit pre-commit hook in this repo (no commits on main, secret scan)
 #   kit stats [--all] [--days N]   workflow numbers from GitHub (see kit-stats.mjs)
 set -e
 
 cmd=$1; issue=$2
+if [ "$cmd" = help ] || [ -z "$cmd" ]; then
+  self=$(readlink "$0" 2>/dev/null || echo "$0")
+  kit=$(cd "$(dirname "$self")/.." && pwd)
+  echo "agent-kit skills   (Claude Code: /k-<name>   Codex: \$k-<name>)"
+  echo ""
+  order="next plan ship review release debug handoff db-change design-check content security lead setup-project tune retro"
+  for n in $order $(ls "$kit/skills" | sed 's/^k-//'); do
+    f="$kit/skills/k-$n/SKILL.md"
+    [ -f "$f" ] || continue
+    case " $seen " in *" $n "*) continue ;; esac
+    seen="$seen $n"
+    d=$(sed -n 's/^description: //p' "$f" | head -1 | sed -e 's/ — .*$/./' -e 's/\. .*$/./')
+    printf '  /k-%-14s %s\n' "$n" "$d"
+  done
+  echo ""
+  echo "Daily flow:  /k-next -> /k-plan -> build -> /k-ship -> /k-review (fresh session) -> you merge"
+  echo "Terminal:    kit help | kit work <issue> | kit done <issue> | kit list | kit hooks | kit stats [--all]"
+  echo "Full guide:  $kit/docs/GUIDE.md"
+  exit 0
+fi
 if [ "$cmd" = stats ]; then
   self=$(readlink "$0" 2>/dev/null || echo "$0")
   shift
@@ -26,11 +48,11 @@ case "$cmd" in
     git -C "$root" fetch origin main --quiet
     git -C "$root" worktree add -b "$branch" "$dir" origin/main
     gh issue edit "$issue" --add-label in-progress >/dev/null 2>&1 || true
-    [ -f "$root/.env" ] && echo "note: .env files are not copied; copy what the worktree needs by hand."
+    echo "note: a new worktree has no installed packages (run the project's install command there) and no .env files (copy what it needs by hand)."
     echo ""
     echo "Ready: $dir  (branch $branch)"
     echo "Start a worker:  cd \"$dir\" && claude     # or: codex"
-    echo "Then say:        work on #$issue: /plan"
+    echo "Then say:        work on #$issue: /k-plan"
     ;;
   done)
     [ -n "$issue" ] || { echo "usage: kit done <issue-number>"; exit 1; }
@@ -41,8 +63,32 @@ case "$cmd" in
   list)
     git -C "$root" worktree list
     ;;
+  hooks)
+    self=$(readlink "$0" 2>/dev/null || echo "$0")
+    kit_hook="$(cd "$(dirname "$self")/.." && pwd)/hooks/pre-commit"
+    [ -f "$kit_hook" ] || { echo "kit: cannot find $kit_hook"; exit 1; }
+    dir=$(cd "$root" && git rev-parse --git-path hooks)
+    case "$dir" in /*) ;; *) dir="$root/$dir" ;; esac
+    target="$dir/pre-commit"
+    if [ -e "$target" ] && ! grep -q "agent-kit" "$target"; then
+      echo "kit: $target already exists and is not from agent-kit."
+      echo "     Add this line to it yourself:   sh \"$kit_hook\" || exit 1"
+      exit 1
+    fi
+    mkdir -p "$dir"
+    {
+      echo '#!/bin/sh'
+      echo '# agent-kit pre-commit (installed by `kit hooks`): no commits on main, secret scan.'
+      echo "K=\"$kit_hook\""
+      echo '[ -f "$K" ] || exit 0'
+      echo 'exec sh "$K" "$@"'
+    } >"$target"
+    chmod +x "$target"
+    echo "Installed $target"
+    echo "It blocks commits on main (product/prototype mode) and commits that contain secrets."
+    ;;
   *)
-    echo "usage: kit work <issue> | kit done <issue> | kit list | kit stats [--all] [--days N]"
+    echo "usage: kit work <issue> | kit done <issue> | kit list | kit hooks | kit stats [--all] [--days N]"
     exit 1
     ;;
 esac

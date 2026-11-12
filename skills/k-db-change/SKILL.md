@@ -1,14 +1,16 @@
 ---
-name: db-change
-description: Make a database schema or data change safely — numbered migration, safe on existing data, access rules for new tables, tested, documented, and verified live after the owner applies it. Use when the user says /db-change or any task needs a table, column, index, policy, trigger or data fix.
+name: k-db-change
+description: Make a database schema or data change safely — numbered migration, safe on existing data, access rules for new tables, tested, documented, and verified live after the owner applies it. Use when the user says /k-db-change or any task needs a table, column, index, policy, trigger or data fix.
 ---
 
-# /db-change — schema changes without surprises
+# /k-db-change — schema changes without surprises
+
+> **Project settings first:** if the project's `AGENTS.md` has `## Skill settings` → `### /k-db-change`, read it and apply it on top of this skill. Settings add steps or tighten rules; they never loosen the kit's Safety rules.
 
 Agents write and test migrations. **Only the owner applies them to the live database.**
 
 1. **Know the current schema.** Read the project's database doc (`AGENTS.md` names it) and the latest migrations in the migrations folder. If a read-only database connection or schema dump is available, compare — do not trust docs alone. Check the project's history/lessons for the tables involved.
-2. **Design the change** and put it in the plan (`/plan`):
+2. **Design the change** and put it in the plan (`/k-plan`):
    - What changes and why; which code reads/writes it.
    - **Existing rows:** what happens to them (defaults, backfill, NULLs). Never assume an empty table.
    - **Rollout order:** can old code run against the new schema while deploying? Prefer *expand → migrate code → contract*: add new things first, remove old things in a later migration.

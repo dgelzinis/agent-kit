@@ -1,0 +1,18 @@
+# Security updates only: Dependabot opens a pull request when a dependency has a known vulnerability.
+# "open-pull-requests-limit: 0" turns off routine version-bump PRs (noise); security PRs still come.
+# Also switch on, once per repo:  Settings → Security → Dependabot alerts + Dependabot security updates.
+# /setup-project: one entry per folder that has its own lockfile.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]

@@ -31,9 +31,12 @@ Run from the repo root.
 Only rules that are specific to this project and not obvious from the code. Prefer turning a rule into a test or lint rule; keep a line here only until it is enforced.
 -
 
+## Skill settings
+<!-- Tunes kit skills for this project (strictness, voice, extra checks). Adds or tightens; never loosens Safety. Create/edit with /k-tune. Empty = kit defaults. -->
+
 ## Design and voice
-- Design rules: <path, e.g. docs/brand/design-system.md> (used by `/design-check`)
-- Voice: <path, e.g. docs/brand/voice.md> (used by `/content`)
+- Design rules: <path, e.g. docs/brand/design-system.md> (used by `/k-design-check`)
+- Voice: <path, e.g. docs/brand/voice.md> (used by `/k-content`)
 
 ## Database
 - Schema doc: <path> · Migrations: <folder, naming e.g. v<N>_<name>.sql> · Applied by: <owner, where/how>
@@ -42,7 +45,7 @@ Only rules that are specific to this project and not obvious from the code. Pref
 Which docs to update when related code changes (e.g. math/formula docs, API docs).
 
 ## Release
-Project-specific release steps for `/release` (e.g. version script with its no-commit option, screenshots to refresh).
+Project-specific release steps for `/k-release` (e.g. version script with its no-commit option, screenshots to refresh).
 
 ## Current work
 GitHub Issues (`gh issue list`). Long-running features may link a design or handoff doc from their issue.
