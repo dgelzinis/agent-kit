@@ -1,0 +1,42 @@
+#!/bin/sh
+# kit — small helper for the agent-kit workflow.
+#   kit work <issue>   create a worktree ../<repo>-<issue> on branch <issue>-<slug>, label the issue in-progress
+#   kit done <issue>   remove that worktree (after its PR is merged)
+#   kit list           list worktrees
+set -e
+
+cmd=$1; issue=$2
+root=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "kit: not inside a git repository"; exit 1; }
+repo=$(basename "$root")
+parent=$(dirname "$root")
+
+case "$cmd" in
+  work)
+    [ -n "$issue" ] || { echo "usage: kit work <issue-number>"; exit 1; }
+    title=$(gh issue view "$issue" --json title -q .title 2>/dev/null || echo "task")
+    slug=$(printf '%s' "$title" | tr '[:upper:]' '[:lower:]' | sed -e 's/[^a-z0-9]/-/g' -e 's/--*/-/g' -e 's/^-//' -e 's/-$//' | cut -c1-40 | sed 's/-$//')
+    branch="$issue-$slug"
+    dir="$parent/$repo-$issue"
+    git -C "$root" fetch origin main --quiet
+    git -C "$root" worktree add -b "$branch" "$dir" origin/main
+    gh issue edit "$issue" --add-label in-progress >/dev/null 2>&1 || true
+    [ -f "$root/.env" ] && echo "note: .env files are not copied; copy what the worktree needs by hand."
+    echo ""
+    echo "Ready: $dir  (branch $branch)"
+    echo "Start a worker:  cd \"$dir\" && claude     # or: codex"
+    echo "Then say:        work on #$issue: /plan"
+    ;;
+  done)
+    [ -n "$issue" ] || { echo "usage: kit done <issue-number>"; exit 1; }
+    dir="$parent/$repo-$issue"
+    git -C "$root" worktree remove "$dir"
+    echo "Removed $dir"
+    ;;
+  list)
+    git -C "$root" worktree list
+    ;;
+  *)
+    echo "usage: kit work <issue> | kit done <issue> | kit list"
+    exit 1
+    ;;
+esac
