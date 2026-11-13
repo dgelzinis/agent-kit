@@ -17,8 +17,9 @@ description: Write an implementation plan for a GitHub issue, post it on the iss
    **Tests:** which tests are added or changed, and for which "Done when" point.
    **Risks:** money math, permissions/RLS, migrations, performance, UX on mobile — only the ones that apply.
    **Out of scope:** what this deliberately does not do.
-   **Size:** S (<1h) / M (half a day) / L (bigger → propose a split with /k-lead).
+   **Size:** S (<1h) / M (half a day) / L (bigger).
    ```
-4. **Post it**: pipe the plan to `gh issue comment <n> --body-file -` (no temporary files inside the repo) and show it to the user.
-5. **Stop and wait** for "ok" or corrections. Do not write code before approval.
-6. If the user changes the plan, update the comment (post a new one marked "Plan v2").
+4. **Size L?** Do not present one big plan. Switch to `/k-lead` now and present its split as checkpoint 2 instead.
+5. **Post it**: pipe the plan to `gh issue comment <n> --body-file -` (no temporary files inside the repo) and show it to the user.
+6. **Checkpoint 2 of 3: stop and wait** for "ok" or corrections. Do not write code before approval. If the user changes the plan, post a new comment marked "Plan v2".
+7. **After the OK, carry on without waiting for another command:** make sure you are on the issue's branch (`<issue>-<short-name>`, from `<base>`), build, verify, then `/k-ship`. `<base>` is the project's `Base branch:` (default `main`).

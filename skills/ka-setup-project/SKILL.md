@@ -14,6 +14,7 @@ Work on a branch: `git switch -c chore/agent-kit-setup`. Templates are in `~/GIT
    - `prototype`: an app being built, deployed or not, without real users yet.
    - `sandbox`: course work, tutorials, experiments, archives.
    For `sandbox`, only steps 4 (AGENTS.md), 5 (CLAUDE.md) and 7 (secrets) are needed; skip CI, templates and labels.
+   Also set `Base branch:`: `main`, unless the owner's day-to-day work lives on another long-lived branch (check `git branch -a` and where recent commits went; ask).
 4. **Project `AGENTS.md`** from `templates/project/AGENTS.md`:
    - Fill Stack, Commands (exact commands that work — run each once to confirm), Architecture (≤10 lines + links), Rules (only project-specific, keep the good ones from existing agent files), Release, Design and voice (point to existing design/brand docs; if the project has a UI but no voice file, note it and suggest `/k-content` to draft one).
    - Target: under ~150 lines. Move long history/ledgers to `docs/history/` instead of deleting them; mention that in the PR.

@@ -37,7 +37,7 @@ if [ "$cmd" = help ] || [ -z "$cmd" ]; then
   w=$(ls -d "$kit"/skills/k-*/ 2>/dev/null | wc -l | tr -d ' ')
   a=$(ls -d "$kit"/skills/ka-*/ "$kit"/admin/*/ 2>/dev/null | wc -l | tr -d ' ')
   echo "Count:       $w of 15 work skills, $a of 5 admin skills"
-  echo "Daily flow:  /k-next (or /k-task for a new idea) -> /k-plan -> build -> /k-ship -> /k-review (fresh session) -> you merge"
+  echo "Daily flow:  /k-next or /k-task <idea>  ->  you OK the task  ->  you OK the plan  ->  agent builds, ships, reviews  ->  you look and merge"
   echo "Terminal:    kit help | kit work <issue> | kit done <issue> | kit list | kit hooks | kit stats [--all]"
   echo "Full guide:  $kit/README.md and $kit/docs/GUIDE.md"
   exit 0
@@ -58,12 +58,14 @@ case "$cmd" in
     slug=$(printf '%s' "$title" | tr '[:upper:]' '[:lower:]' | sed -e 's/[^a-z0-9]/-/g' -e 's/--*/-/g' -e 's/^-//' -e 's/-$//' | cut -c1-40 | sed 's/-$//')
     branch="$issue-$slug"
     dir="$parent/$repo-$issue"
-    git -C "$root" fetch origin main --quiet
-    git -C "$root" worktree add -b "$branch" "$dir" origin/main
+    base=$(sed -n 's/^Base branch:[[:space:]]*\([^[:space:]]*\).*/\1/p' "$root/AGENTS.md" 2>/dev/null | head -1)
+    [ -n "$base" ] || base=main
+    git -C "$root" fetch origin "$base" --quiet
+    git -C "$root" worktree add -b "$branch" "$dir" "origin/$base"
     gh issue edit "$issue" --add-label in-progress >/dev/null 2>&1 || true
     echo "note: a new worktree has no installed packages (run the project's install command there) and no .env files (copy what it needs by hand)."
     echo ""
-    echo "Ready: $dir  (branch $branch)"
+    echo "Ready: $dir  (branch $branch, from $base)"
     echo "Start a worker:  cd \"$dir\" && claude     # or: codex"
     echo "Then say:        work on #$issue: /k-plan"
     ;;

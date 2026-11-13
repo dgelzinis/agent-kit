@@ -77,21 +77,19 @@ In the project: start `claude` or `codex` and type `/ka-setup-project`. On a new
 
 ## 5. Daily flow
 
-| Step | You say / do | What happens |
-|---|---|---|
-| Start | `claude` or `codex`, then `/k-next` | Unfinished work (and the last `/k-handoff`), open PRs, top ready issues |
-| Pick | "work on #12" | Branch `12-…`, issue labelled `in-progress` |
-| Plan | `/k-plan` | Plan posted on the issue; the agent waits for your OK |
-| Build | "ok" | Code + tests; `/k-debug` for bugs, `/k-db-change` for database changes, `/k-content` for text |
-| Check UI | `/k-design-check` | Screenshots at phone/tablet/desktop against the design rules |
-| PR | `/k-ship` | Checks pass, PR opened with `Closes #12`, CI runs |
-| Review | new terminal, fresh session: `/k-review` | Verdict posted on the PR; the builder fixes blockers |
-| Look | you | Click through it on phone and laptop |
-| Merge | you (`gh pr merge --squash --delete-branch`) | Deploys, issue closes |
-| Stop mid-task | `/k-handoff` | Where things stand, saved on the issue for the next session |
-| Release | `/k-release`, when you choose | `/k-security` first for products, then release PR → tag → GitHub release |
+You decide at three checkpoints; the agent drives everything in between.
 
-Parallel work on a big issue: `/k-lead #12` splits it into sub-issues; `kit work <n>` creates a worktree per sub-issue; start an agent in each; `/k-lead status` tracks them. Keep it to 2–3 workers.
+1. **Start:** `/k-next` (where things stand) or `/k-task <idea>` (a new task).
+2. **Checkpoint 1, task:** you approve the written task. The agent creates the issue and a branch from the base branch.
+3. **Checkpoint 2, plan:** you approve the plan. A plan of size L becomes a split from `/k-lead`, with the question whether to run the workers automatically.
+4. The agent builds, verifies, runs the extra checks the project's Skill settings require (`/k-security`, `/k-design-check`), opens the pull request (`/k-ship`), and has it reviewed by a fresh reviewer subagent where the tool allows (otherwise it asks you to run `/k-review` in a new session). It fixes blockers.
+5. **Checkpoint 3, result:** you get the pull request, checks and verdict; you look and merge.
+
+It also stops when something is unclear, a safety rule or the hook blocks it, it needs to go outside the task's scope, or a check keeps failing. Say "step by step" (or set `### Flow` → `Control: step by step` with `/ka-tune`) to confirm every skill yourself. `/k-handoff` saves the state when you stop; `/k-release` is separate and only on request.
+
+**Base branch.** A project's `AGENTS.md` may say `Base branch: <name>` (default `main`). Issue branches, pull requests, `/k-next`, `/k-ship`, `/k-review`, `/k-lead` and `kit work` follow it. Releases are cut from `main`. The pre-commit hook blocks commits on `main`/`master` only.
+
+**Large tasks.** Automatic mode (Claude Code): the lead starts up to 3 worker subagents in separate worktrees, each going plan → build → pull request, reviews each with a fresh reviewer, and reports at checkpoint 3; dependent parts start after you merge and say "continue". Manual mode (any tool): `kit work <sub-issue>` per part, an agent in each folder, `/k-lead status` to track.
 
 ## 6. All commands
 

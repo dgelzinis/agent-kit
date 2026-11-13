@@ -21,12 +21,26 @@ The Safety rules below apply in every mode. The rest of this file describes `pro
 ## How we work
 1. **Work comes from a GitHub issue.** Start with `/k-next` if no issue is given. I describe something without an issue → use `/k-task` to write it up, and create the issue after I agree.
 2. **Plan before code.** For anything beyond a one-line fix, run `/k-plan` and wait for my OK.
-3. **Never commit to `main`.** One branch per issue: `<issue>-<short-name>` (e.g. `42-loan-what-if`).
+3. **Never commit to the base branch.** One branch per issue: `<issue>-<short-name>` (e.g. `42-loan-what-if`), created from the base branch; pull requests target it. The base branch is `main` unless the project's `AGENTS.md` says `Base branch: <name>`; wherever a skill says `<base>`, use it. Releases are always cut from `main`.
 4. **Stay in scope.** Only change what the issue needs. If shared code must change, or you find another problem, comment on the issue (or open a new one) and continue only with my OK.
 5. **Done means verified.** Run the project's lint, test and build commands (from its `AGENTS.md` → Commands) until they pass. New logic gets a test; money, dates and permissions always do. Bugs go through `/k-debug`; restructuring goes through `/k-refactor`, in its own pull request; UI changes get a `/k-design-check` before `/k-ship`.
 6. **Ship through a pull request.** Use `/k-ship`. The PR title is a Conventional Commit (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`, `test:`) and the body says `Closes #<issue>`.
-7. **Someone else reviews.** `/k-review` runs in a fresh session. I merge; agents never merge.
+7. **Someone else reviews.** `/k-review` runs with a fresh context (a reviewer subagent, or a new session). I merge; agents never merge.
 8. **Releases are separate.** Only `/k-release`, only when I ask.
+
+## Checkpoints (how I stay in control)
+Once I give you a task, drive the flow yourself; do not wait for me to type the next skill. Stop and wait for me only at these three checkpoints:
+
+1. **Task:** the written task from `/k-task`, before the issue is created. Skipped when I point you at an existing issue.
+2. **Plan:** the plan from `/k-plan`, or the split when the task is large. Nothing is built before my OK.
+3. **Result:** the pull request(s) with the review verdict. I look at the result and merge.
+
+Between checkpoints carry on by yourself: branch, build, verify, `/k-ship`, review.
+- **Large tasks:** when a plan comes out size L, switch to `/k-lead` yourself and present the split as checkpoint 2.
+- **Review:** after `/k-ship`, if you can start a subagent with a fresh context (Claude Code: the `reviewer` agent), run `/k-review` through it and fix its blockers before checkpoint 3. If you cannot, tell me to run `/k-review` in a new session.
+- **Stop at any time** when: something is unclear and a wrong guess would cost real rework; a Safety rule or the pre-commit hook blocks you; you need to change something outside the issue's scope; a check still fails after two honest attempts. Say in one or two sentences what you need from me.
+- **Keep me oriented.** Start each checkpoint with one line, e.g. `Checkpoint 2 of 3: plan for #42`, and end with exactly what I can answer ("ok", or what to change).
+- **More control:** if I say "step by step", or the project's Skill settings say `Control: step by step`, wait for me before every skill instead.
 
 ## Skills (slash commands)
 Kit skills use a prefix so they never collide with a tool's built-in commands (plain `/review`, `/plan`, `/debug`, `/security-review` are built-ins and do something else): **`k-` for doing work, `ka-` for administering the kit and a project's setup.** Claude Code: type `/k-next`. Codex: `$k-next` or pick from `/skills`. Gemini CLI: "activate the k-next skill". If your tool does not list a skill, read its file and follow it. When I ask "what can the kit do?", answer from these tables (or tell me to run `kit help`).

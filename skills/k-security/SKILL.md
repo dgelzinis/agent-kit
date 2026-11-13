@@ -10,7 +10,7 @@ description: Security review of a change or a whole app — access control, secr
 Do not edit files. Report findings; fixes go through the normal flow.
 
 ## Scope
-- `/k-security` on a branch or PR → the diff against `origin/main`, plus the code it calls.
+- `/k-security` on a branch or PR → the diff against the project's base branch (`Base branch:` in its `AGENTS.md`, default `origin/main`), plus the code it calls.
 - `/k-security app` → the whole project, area by area (start with auth, data access, payments).
 Read the project's `AGENTS.md` (Rules, Architecture) and its security docs if listed.
 

@@ -10,10 +10,10 @@ description: Independent code review of the current branch or a pull request aga
 You did not write this code. Judge it only by the issue, the diff and the project's rules.
 Do not read memory/ledger/roadmap files. Do not edit files.
 
-1. **Pick the pull request.** A number was given → that one. Otherwise `gh pr view --json number` for the current branch. If the current branch has no PR: `gh pr list --state open --json number,title,headRefName` → exactly one open PR: use it; several: ask which. Never review "whatever is checked out" by guessing. No PR at all → review the current branch against `origin/main` and say so.
+1. **Pick the pull request.** A number was given → that one. Otherwise `gh pr view --json number` for the current branch. If the current branch has no PR: `gh pr list --state open --json number,title,headRefName` → exactly one open PR: use it; several: ask which. Never review "whatever is checked out" by guessing. No PR at all → review the current branch against the project's base branch and say so.
 2. **Gather** (no checkout needed)
    - PR: `gh pr view <n> --json number,title,body,files,headRefName`. Linked issue: `gh issue view <issue>`.
-   - Diff: `gh pr diff <n>` (branch without a PR: `git fetch origin main && git diff origin/main...HEAD`).
+   - Diff: `gh pr diff <n>` (branch without a PR: `git fetch origin <base> && git diff origin/<base>...HEAD`, where `<base>` is the project's `Base branch:`, default `main`).
    - To read a changed file in full: `git fetch origin <headRefName>` then `git show origin/<headRefName>:<path>`.
    - Project rules: the project's `AGENTS.md` (Rules and Architecture sections).
    - Open other files only to understand a changed line.

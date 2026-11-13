@@ -2,6 +2,7 @@
 
 Mode: product   <!-- product | prototype | sandbox — see ~/GIT/agent-kit/AGENTS.md → Project mode -->
 Stacks: <e.g. react-vite, node-express, supabase>   <!-- packs in ~/GIT/agent-kit/stacks/ -->
+Base branch: main   <!-- where issue branches start and pull requests go; change only while a long-lived branch (e.g. a redesign) is the real line of work -->
 
 Global working rules come from `~/GIT/agent-kit/AGENTS.md`. This file adds what is specific to this project and wins where they differ.
 

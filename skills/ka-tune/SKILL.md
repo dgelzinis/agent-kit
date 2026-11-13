@@ -20,7 +20,8 @@ Kit skills are the same everywhere. Each project tunes them in its `AGENTS.md` u
    2. **Content voice** — who reads it, tone in 3 words, words to use / avoid, language and spelling, emoji yes/no. Existing voice doc to point to?
    3. **Design** — where are the design rules, which screen widths matter, how to open the app with demo data?
    4. **Review** — anything the reviewer must always check in this project (core calculations, a shared component, accessibility level)?
-   5. **Anything else** — e.g. `/k-db-change` (where migrations are applied), `/k-release` (extra steps), `/k-plan` (always include X).
+   5. **Control** — the default is three checkpoints (task, plan, result) with the agent carrying on in between. Prefer to confirm every step? Should large tasks run their workers automatically, or do you drive them?
+   6. **Anything else** — e.g. `/k-db-change` (where migrations are applied), `/k-release` (extra steps), `/k-plan` (always include X).
 3. **Draft** the `## Skill settings` section. Pointers to existing docs beat new text. If a voice or security doc is needed and missing, offer to create a short one (`docs/brand/voice.md`, `docs/security/threat-model.md`) — under ~40 lines.
 4. **Show** the draft (or the diff against the current section) and wait for OK.
 5. **Write** it into `AGENTS.md`, placed after `## Rules`. On a branch for `product`/`prototype` projects (`chore/skill-settings`), then `/k-ship`; in `sandbox` mode, edit directly.
@@ -30,6 +31,9 @@ Kit skills are the same everywhere. Each project tunes them in its `AGENTS.md` u
 ```markdown
 ## Skill settings
 <!-- Tunes kit skills for this project. Adds or tightens; never loosens Safety. Edit with /ka-tune. -->
+
+### Flow
+Control: checkpoints (default) | step by step. Large tasks: ask (default) | automatic | manual.
 
 ### /k-security
 Level: strict. Run on every PR touching <paths>, not only before releases.

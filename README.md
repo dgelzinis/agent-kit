@@ -81,22 +81,27 @@ The prefixes are deliberate: plain `/review`, `/plan`, `/debug` and `/security-r
 
 ## The daily flow
 
-The same in every project and every tool.
+You start a task and decide at **three checkpoints**. The agent does everything in between by itself; you don't type the next skill.
 
-| Step | You say / do | What happens |
+| | What happens | What you do |
 |---|---|---|
-| Start | start the agent, then `/k-next` | Unfinished work and the last handoff, open pull requests, top ready issues |
-| New idea | `/k-task <your idea in your own words>` | A few questions, then a clear issue with "done when" points |
-| Pick | "work on #12" | Branch `12-…`, issue labelled `in-progress` |
-| Plan | `/k-plan` | Plan posted on the issue; the agent waits for your OK |
-| Build | "ok" | Code and tests; the project's checks pass |
-| Pull request | `/k-ship` | Extra checks the project requires, then a pull request with `Closes #12`; CI runs |
-| Review | new terminal, fresh session: `/k-review` | Verdict posted on the pull request; the builder fixes blockers |
-| Look | you | Click through it on phone and laptop |
-| Merge | you (`gh pr merge --squash --delete-branch`) | Deploys; the issue closes |
-| Clean up code | `/k-refactor`, as its own issue and pull request | Tests green before and after; no behaviour change |
-| Stop mid-task | `/k-handoff` | Where things stand, saved on the issue for the next session |
-| Release | `/k-release`, when you choose | Security check, release pull request, tag, GitHub release with notes |
+| Start | `/k-next` shows where things stand. For a new idea: `/k-task <your idea in your own words>` | Pick an issue, or describe the idea |
+| **Checkpoint 1: task** | The agent shows the written task: what, why, "done when", out of scope | "ok", or correct it |
+| | It creates the issue and a branch, and writes a plan | — |
+| **Checkpoint 2: plan** | The agent shows the plan. If the task is large it shows a split into parts instead, and asks whether to run the workers automatically | "ok", or correct it |
+| | It builds, tests, runs the checks the project requires, opens a pull request, has a fresh reviewer agent check it, and fixes the blockers | — |
+| **Checkpoint 3: result** | The agent reports: pull request, checks, review verdict, what to look at | Look at it on phone and laptop, then merge |
+
+Each checkpoint starts with a line like `Checkpoint 2 of 3: plan for #42` and ends with what you can answer.
+
+- **It also stops** whenever something is unclear, a safety rule blocks it, it would have to change something outside the task, or a check keeps failing.
+- **More control:** say "step by step" and it waits for you before every skill. To make that the rule for a project, set `Control: step by step` with `/ka-tune`.
+- **In Codex and Gemini CLI** the review at the end is not automatic: the agent asks you to run `/k-review` in a new session.
+- **Stopping mid-task:** `/k-handoff` saves where things stand on the issue; tomorrow's `/k-next` picks it up.
+- **Releases** are separate: `/k-release`, only when you ask.
+- **Base branch:** issue branches start from, and pull requests go to, `main`. A project whose real work is on a long-lived branch says so in its `AGENTS.md` (`Base branch: redesign`), and every skill and `kit work` follow it.
+
+You can still call any skill directly (`/k-plan`, `/k-ship`, `/k-review`, `/k-debug`, …) when you want one step only.
 
 Work lives in GitHub Issues. Agents never merge and never release on their own.
 
@@ -145,7 +150,12 @@ Bypass the hook only when you mean it: `KIT_ALLOW_MAIN=1 git commit …` or `KIT
 
 ## Parallel work with several agents
 
-For a feature too big for one agent: `/k-lead #12` proposes sub-issues that do not touch the same files, with their dependencies. After your OK it creates them and tells you to run `kit work <sub-issue>` (a separate worktree and branch) and start an agent in each. `/k-lead status` shows who is done, blocked or in conflict. The lead never writes product code and never merges. Keep it to 2–3 workers: you are the one reviewing and merging, and each agent costs its own tokens.
+Large tasks get a lead automatically: when a plan comes out as size L, the agent switches to `/k-lead` and shows you a split into 2–4 parts that do not touch the same files (you can also call `/k-lead #12` yourself). With the split it asks one question: run the workers automatically, or will you drive them?
+
+- **Automatic** (Claude Code): the lead starts up to 3 workers, each in its own copy of the code. Each plans, builds, tests and opens a pull request; a fresh reviewer checks each one. The lead reports all of them at checkpoint 3. Parts that depend on another part wait until you have merged it and said "continue".
+- **You drive** (any tool): the lead tells you to run `kit work <sub-issue>` and start an agent in each new folder. `/k-lead status` shows who is done, blocked or in conflict.
+
+The lead never writes product code and never merges. It suggests driving it yourself for payments, sign-in, permissions and database changes. Automatic saves your time, not tokens: three workers cost about three times as much.
 
 ## Lessons, measuring and improving
 
