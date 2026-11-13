@@ -35,6 +35,9 @@ Group findings. A pattern needs **2+ occurrences**. For each, decide where the f
 ## 4. Check last month's changes
 For each change the last retro made: did its target number move? If not after two retros, propose reverting or rethinking it.
 
+## 4b. Keep the knowledge packs current
+Pick one or two packs in `stacks/` (oldest reviewed first, or those behind this month's lessons). Check them against the current official docs named in their Standards line (search the web; do not rely on memory). Outdated or wrong advice → a correction counts as one of this retro's proposals.
+
 ## 5. Propose
 - Branch `retro/<yyyy-mm>`, make the ≤3 changes, open a PR titled `chore(retro): <yyyy-mm>` with, per change: evidence (links), the change, the metric and target.
 - Project-level proposals → issues in those projects (label `lesson`), linked from the PR.

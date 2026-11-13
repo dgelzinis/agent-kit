@@ -12,7 +12,7 @@ Do not edit files. Report findings; fixes go through the normal flow.
 ## Scope
 - `/k-security` on a branch or PR → the diff against the project's base branch (`Base branch:` in its `AGENTS.md`, default `origin/main`), plus the code it calls.
 - `/k-security app` → the whole project, area by area (start with auth, data access, payments).
-Read the project's `AGENTS.md` (Rules, Architecture) and its security docs if listed.
+Read the project's `AGENTS.md` (Rules, Architecture) and its security docs if listed, and the kit's `~/GIT/agent-kit/stacks/security.md` (OWASP Top 10 and ASVS in practical form), plus `payments-stripe.md` and `ai-llm.md` when the scope includes payments or AI calls.
 
 ## Check
 1. **Access control** — every endpoint and query checks *who* may do *what* on *which* record. Ownership/membership enforced on the server or in the database (e.g. RLS), not only in the UI. New tables/routes get the same protection as old ones. Roles (viewer/editor/admin) cannot escalate.

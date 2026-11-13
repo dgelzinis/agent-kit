@@ -20,7 +20,7 @@ You write the task; building happens in the skills that follow. This is checkpoi
    - **Depends on / Notes:** related issues, design docs, screenshots.
    - Describe the outcome, not the implementation, unless the owner asked for a specific approach.
 5. **Check the size.** S (under an hour), M (half a day), L (bigger). L → propose a split into smaller tasks that each deliver something visible, and say which comes first.
-6. **Name the kind and the next skill:** feature → `/k-plan`; bug → `/k-debug`; cleanup → `/k-refactor`; wording → `/k-content`; schema → `/k-db-change`. Suggest labels (`bug`, `security`).
+6. **Name the kind and the next skill:** feature → `/k-plan`, then `/k-code build`; bug → `/k-code fix`; cleanup → `/k-code refactor`; wording → `/k-content`; schema → `/k-code database`. Suggest labels (`bug`, `security`).
 7. **Show the draft and wait.** Apply corrections. After the OK: pipe the body to `gh issue create --title "…" --body-file -` (plus labels), and give the issue number. Then continue with the next skill from step 6 without waiting to be asked (for a feature: branch, then `/k-plan`). Stop here instead if the owner only wanted the task written down ("just the task", building a backlog, several tasks in a row).
 
 ## /k-task quick <request>

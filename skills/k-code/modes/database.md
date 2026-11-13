@@ -1,11 +1,4 @@
----
-name: k-db-change
-description: Make a database schema or data change safely — numbered migration, safe on existing data, access rules for new tables, tested, documented, and verified live after the owner applies it. Use when the user says /k-db-change or any task needs a table, column, index, policy, trigger or data fix.
----
-
-# /k-db-change — schema changes without surprises
-
-> **Project settings first:** if the project's `AGENTS.md` has `## Skill settings` → `### /k-db-change`, read it and apply it on top of this skill. Settings add steps or tighten rules; they never loosen the kit's Safety rules.
+# Mode: database — schema changes without surprises
 
 Agents write and test migrations. **Only the owner applies them to the live database.**
 

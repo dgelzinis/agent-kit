@@ -23,9 +23,10 @@ Do not read memory/ledger/roadmap files. Do not edit files.
    - **Security**: authorization and data access (e.g. RLS, ownership checks), input validation, secrets, injection (SQL/XSS), safe redirects.
    - **Data**: migrations numbered, reversible or safe on existing data; no destructive change without a plan.
    - **Project rules**: anything the project's `AGENTS.md` forbids (e.g. duplicated calculations, wrong component library).
-   - **Tests**: new logic tested; tests actually assert behaviour.
+   - **Tests** (`stacks/testing.md`): new logic tested; tests actually assert behaviour.
+   - **Standards**: the change follows the knowledge packs for what it touches (`~/GIT/agent-kit/stacks/README.md` says which).
    - **UX**: loading/empty/error states, mobile layout, copy.
-   - **Simplicity**: dead code, duplication, needless complexity.
+   - **Code design** (`~/GIT/agent-kit/stacks/code.md`): one job per function/component/module; business rules in one place and free of framework or database details; no duplicated formula or validation; no abstraction without a present need; dead code, needless complexity.
 4. **Output** — only real findings, each with `file:line`, why it matters, and a suggested fix:
    ```
    ## Review: <PR title>

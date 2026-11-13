@@ -1,5 +1,7 @@
 # Stack pack: React + Vite + TypeScript
 
+**Standards:** the official React docs (react.dev, including the Rules of React and "You Might Not Need an Effect"), the TypeScript handbook (typescriptlang.org/docs), Vite docs (vite.dev), and the docs of the data library the project uses (e.g. TanStack Query). Check the current docs for the installed major version.
+
 ## Data
 - Server data through the project's data layer (e.g. TanStack Query hooks), not `fetch` in components. One query key per resource; invalidate on mutation.
 - Every data view has loading, empty and error states. Skeletons take the same space as the loaded content (no layout jump).

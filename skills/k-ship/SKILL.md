@@ -16,7 +16,7 @@ Never run on the base branch. Never merge. Never bump versions (that is `/k-rele
 2. **Self-check the diff**: `git diff origin/<base>...HEAD --stat`, then skim the diff.
    - Nothing outside the issue's scope, no debug code, no secrets, no stray files (logs, screenshots, scratch).
    - Each "Done when" point is met — list how.
-3. **Required extra checks.** Read the project's `## Skill settings`: if they require `/k-security` or `/k-design-check` for the paths this change touches (or the change touches sign-in, permissions, payments, user data, AI calls, or UI), run that skill now and fix its "must fix" findings — or tell the user it is still to do and say so in the PR.
+3. **Required extra checks.** Read the project's `## Skill settings`: if they require `/k-security` or `/k-design` (check mode) for the paths this change touches (or the change touches sign-in, permissions, payments, user data, AI calls, or UI), run that skill now and fix its "must fix" findings — or tell the user it is still to do and say so in the PR.
 4. **Docs**: update only docs this change makes wrong (the project's `AGENTS.md` names which docs matter). Do not write change logs.
 5. **Commit and push**:
    - Commits in Conventional Commit style (`feat: …`, `fix: …`).

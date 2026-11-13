@@ -1,11 +1,4 @@
----
-name: k-debug
-description: Fix a bug the reliable way — reproduce it, capture it in a failing test, fix the cause, prove it with the test. Use when the user says /k-debug or reports something broken.
----
-
-# /k-debug — reproduce, test, fix, prove
-
-> **Project settings first:** if the project's `AGENTS.md` has `## Skill settings` → `### /k-debug`, read it and apply it on top of this skill. Settings add steps or tighten rules; they never loosen the kit's Safety rules.
+# Mode: fix — reproduce, test, fix, prove
 
 Do not guess-and-patch. A bug is fixed when a test that failed now passes.
 

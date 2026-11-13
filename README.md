@@ -26,7 +26,7 @@ Three layers. Each adds to the one above and wins where they disagree.
 | Layer | Where | Holds |
 |---|---|---|
 | **Kit** | `AGENTS.md`, `skills/` (this folder) | How I work: issue → plan → branch → pull request → review; safety rules; the skills |
-| **Stack packs** | `stacks/` (this folder) | Rules and traps per technology: Supabase, React/Vite, Node/Express, Next.js |
+| **Knowledge packs** | `stacks/` (this folder) | The industry standard and the practical rules per technology (Supabase, React/Vite, Node/Express, Next.js) and per problem (code design, UX, testing, security, APIs, payments, AI features) |
 | **Project** | `<project>/AGENTS.md` | That project's facts: mode, stacks, commands, architecture, rules, skill settings, release steps |
 
 The kit is **linked** into each tool, not copied. `install.sh` creates the links, so an edit here is live in every project's next agent session.
@@ -42,7 +42,7 @@ kit help                                                                # check:
 ```
 `install.sh` links the rules and skills into Claude Code, Codex and Gemini CLI, adds Claude Code permissions (block reading secrets, allow reading the kit), and installs the `kit` command. It backs up anything it replaces to `~/.agent-kit-backup/` and is safe to run again.
 
-**In a project (once per project):** start an agent in the project and run `/ka-setup-project`. It detects the stack, suggests a mode, writes a short project `AGENTS.md`, adds CI and templates, asks a few questions for the skill settings, installs the pre-commit hook, and opens a pull request for you to review.
+**In a project (once per project):** start an agent in the project and run `/ka-project setup`. It detects the stack, suggests a mode, writes a short project `AGENTS.md`, adds CI and templates, asks a few questions for the skill settings, installs the pre-commit hook, and opens a pull request for you to review.
 
 ## Cheat sheet: which skill when
 
@@ -57,12 +57,10 @@ Two prefixes: **`k-` for doing work, `ka-` for administering the kit and a proje
 | picked an issue and want a plan before code | `/k-plan` |
 | finished building and want a pull request | `/k-ship` |
 | want an independent check of a pull request (fresh session) | `/k-review` |
-| found a bug | `/k-debug` |
-| want to clean up or restructure code without changing what it does | `/k-refactor` |
-| need a table, column or data fix | `/k-db-change` |
-| changed how something looks | `/k-design-check` |
+| want code written or changed: a feature (`build`), a bug (`fix`), a cleanup (`refactor`), a table or column (`database`) | `/k-code` (it picks the mode; or say `/k-code fix`) |
+| want a screen designed before it is built, design options, or a check of how something looks | `/k-design` |
 | need text: headlines, buttons, emails, posts | `/k-content` |
-| touched sign-in, payments, user data or AI, or are about to release | `/k-security` |
+| touched sign-in, payments, user data or AI, or are about to release (the other skills also call it by themselves) | `/k-security` |
 | stop for the day or mid-task | `/k-handoff` |
 | want a new version out | `/k-release` |
 | have a feature too big for one agent | `/k-lead` |
@@ -71,8 +69,7 @@ Two prefixes: **`k-` for doing work, `ka-` for administering the kit and a proje
 
 | When you… | Use | Where |
 |---|---|---|
-| open a project that isn't on the kit yet | `/ka-setup-project` | in that project |
-| want this project stricter, softer or different | `/ka-tune` | in that project |
+| open a project that isn't on the kit yet, or want a project stricter, softer or different | `/ka-project` (modes: `setup`, `tune`) | in that project |
 | want to improve the kit itself (monthly) | `/ka-retro` | only inside `~/GIT/agent-kit` (not listed elsewhere) |
 
 Terminal helper: `kit help` · `kit work <issue>` · `kit done <issue>` · `kit list` · `kit hooks` · `kit stats [--all] [--days N]`
@@ -88,20 +85,20 @@ You start a task and decide at **three checkpoints**. The agent does everything 
 | Start | `/k-next` shows where things stand. For a new idea: `/k-task <your idea in your own words>` | Pick an issue, or describe the idea |
 | **Checkpoint 1: task** | The agent shows the written task: what, why, "done when", out of scope | "ok", or correct it |
 | | It creates the issue and a branch, and writes a plan | — |
-| **Checkpoint 2: plan** | The agent shows the plan. If the task is large it shows a split into parts instead, and asks whether to run the workers automatically | "ok", or correct it |
+| **Checkpoint 2: plan** | The agent shows the plan. For anything users see, it includes a design with a quick mockup. If the task is large it shows a split into parts instead, and asks whether to run the workers automatically | "ok", or correct it |
 | | It builds, tests, runs the checks the project requires, opens a pull request, has a fresh reviewer agent check it, and fixes the blockers | — |
 | **Checkpoint 3: result** | The agent reports: pull request, checks, review verdict, what to look at | Look at it on phone and laptop, then merge |
 
 Each checkpoint starts with a line like `Checkpoint 2 of 3: plan for #42` and ends with what you can answer.
 
 - **It also stops** whenever something is unclear, a safety rule blocks it, it would have to change something outside the task, or a check keeps failing.
-- **More control:** say "step by step" and it waits for you before every skill. To make that the rule for a project, set `Control: step by step` with `/ka-tune`.
+- **More control:** say "step by step" and it waits for you before every skill. To make that the rule for a project, set `Control: step by step` with `/ka-project tune`.
 - **In Codex and Gemini CLI** the review at the end is not automatic: the agent asks you to run `/k-review` in a new session.
 - **Stopping mid-task:** `/k-handoff` saves where things stand on the issue; tomorrow's `/k-next` picks it up.
 - **Releases** are separate: `/k-release`, only when you ask.
 - **Base branch:** issue branches start from, and pull requests go to, `main`. A project whose real work is on a long-lived branch says so in its `AGENTS.md` (`Base branch: redesign`), and every skill and `kit work` follow it.
 
-You can still call any skill directly (`/k-plan`, `/k-ship`, `/k-review`, `/k-debug`, …) when you want one step only.
+You can still call any skill directly (`/k-plan`, `/k-ship`, `/k-review`, `/k-code fix`, …) when you want one step only.
 
 Work lives in GitHub Issues. Agents never merge and never release on their own.
 
@@ -134,7 +131,7 @@ Level: strict. Run on every pull request touching the backend, database or AI ca
 Voice: docs/brand/voice.md. Calm, plain, never hype.
 ```
 
-Every skill reads its block first. Settings add steps or tighten rules; they never loosen the safety rules. Create or change them with `/ka-tune` (it asks a few questions and writes the section after your OK). Never copy a kit skill into a project to change it; for a truly different process, write a project skill with a new name in `<project>/.agents/skills/`.
+Every skill reads its block first. Settings add steps or tighten rules; they never loosen the safety rules. Create or change them with `/ka-project tune` (it asks a few questions and writes the section after your OK). Never copy a kit skill into a project to change it; for a truly different process, write a project skill with a new name in `<project>/.agents/skills/`.
 
 ## What is enforced
 
@@ -169,8 +166,9 @@ The lead never writes product code and never merges. It suggests driving it your
 | You change… | What to do |
 |---|---|
 | A skill, a stack pack or `AGENTS.md` | Save, commit, push. Live in every project's next session. |
+| Add a mode to a skill | Add `modes/<mode>.md` in that skill's folder and a row in its `SKILL.md` table. No install step. Prefer this to a new skill when it is the same expertise at another moment. |
 | Add or rename a skill | Work skill → `skills/k-<name>/`; project admin → `skills/ka-<name>/`; kit-only → `admin/ka-<name>/`. List it in `AGENTS.md` → Skills and run `sh install.sh` once (here, not per project). |
-| Templates in `templates/project/` | Nothing for new projects. Existing projects keep their copies; `/ka-setup-project` can update one. |
+| Templates in `templates/project/` | Nothing for new projects. Existing projects keep their copies; `/ka-project setup` can update one. |
 
 **Size limit: at most 15 work skills (`k-`) and 5 admin skills (`ka-`).** At the limit, a new skill replaces or merges with an existing one. `kit help` shows the current count and `install.sh` warns when the limit is passed. Each skill stays well under 80 lines; stack packs under 40 lines. Undo a change with `git revert <commit>`.
 
@@ -181,14 +179,14 @@ When Claude edits the kit from a cloud session it cannot overwrite `AGENTS.md` (
 | Path | What it is |
 |---|---|
 | `AGENTS.md` | Global rules for every agent in every project |
-| `skills/k-*/SKILL.md` | The 14 work skills, linked into every tool |
-| `skills/ka-*/SKILL.md` | The 2 project admin skills (`ka-setup-project`, `ka-tune`), linked into every tool |
+| `skills/k-*/` | The 12 work skills, linked into every tool. A skill with modes keeps each mode's steps in `modes/<mode>.md` beside its `SKILL.md` |
+| `skills/ka-*/` | The project admin skill `ka-project` (modes `setup`, `tune`), linked into every tool |
 | `admin/ka-*/SKILL.md` | Kit-only admin skills (`ka-retro`); `install.sh` links them into this repo's own `.claude/skills` and `.agents/skills`, so they appear only when you work here |
-| `stacks/` | Stack packs: `supabase`, `react-vite`, `node-express`, `nextjs` |
+| `stacks/` | Knowledge packs, each naming the industry standard and its source. Technology: `supabase`, `react-vite`, `node-express`, `nextjs`. Problem: `code` and `ux` (always), `testing`, `security`, `api`, `payments-stripe`, `ai-llm`. `stacks/README.md` says which to read when |
 | `claude/agents/reviewer.md` | The reviewer as a Claude Code subagent |
 | `hooks/pre-commit` | The pre-commit check installed by `kit hooks` |
 | `bin/kit`, `bin/kit-stats.mjs` | The `kit` terminal helper |
-| `templates/project/` | What `/ka-setup-project` puts in a repo: `AGENTS.md`, `CLAUDE.md`, and `github/` (copied in as `.github/`: CI, issue and pull request templates, Dependabot) |
+| `templates/project/` | What `/ka-project setup` puts in a repo: `AGENTS.md`, `CLAUDE.md`, and `github/` (copied in as `.github/`: CI, issue and pull request templates, Dependabot) |
 | `install.sh` | Links everything into each tool |
 | `docs/GUIDE.md` | The full guide |
 

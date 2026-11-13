@@ -1,5 +1,7 @@
 # Stack pack: Supabase / PostgreSQL
 
+**Standards:** Supabase docs (supabase.com/docs, especially Row Level Security and Auth) and the PostgreSQL manual (postgresql.org/docs). Versions and client APIs change: check the current docs for exact syntax.
+
 ## Access
 - Row-level security is the real boundary. Every table: `ALTER TABLE … ENABLE ROW LEVEL SECURITY` plus explicit policies. No policy = no access for clients (good default); a broad policy = everyone's data.
 - "Update own row" policies expose **every column** of that row. Protect server-owned columns (plan, role, billing, flags) with a trigger or column-level grants.
@@ -8,7 +10,7 @@
 - Test access with two real users: user B must not read or change user A's rows.
 
 ## Schema changes
-- Use `/db-change`. Migrations are files in the repo, numbered, re-runnable; never edit the schema in the dashboard without a matching file.
+- Use `/k-code database`. Migrations are files in the repo, numbered, re-runnable; never edit the schema in the dashboard without a matching file.
 - A migration in the repo is not a migration applied. Verify it is live (query the table/column) after applying; PostgREST error `PGRST205`/`42P01` means the table is missing.
 - After schema changes, PostgREST may need its schema cache reloaded (`NOTIFY pgrst, 'reload schema';`).
 - Money: `numeric(14,2)` (or finer), never `float`. Time: `timestamptz`. Dates without time: `date`.

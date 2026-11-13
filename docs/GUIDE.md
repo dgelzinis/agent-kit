@@ -11,7 +11,7 @@ There are three layers. Each one adds to the one above and wins where they disag
 | Layer | Where | Holds |
 |---|---|---|
 | **Kit** | `~/GIT/agent-kit/AGENTS.md`, `skills/` | How you work: plan → branch → PR → review, safety rules, the slash commands |
-| **Stack packs** | `~/GIT/agent-kit/stacks/` | Rules and traps per technology (Supabase, React/Vite, Node/Express, Next.js) |
+| **Knowledge packs** | `~/GIT/agent-kit/stacks/` | Per technology (Supabase, React/Vite, Node/Express, Next.js) and per problem (code design, UX, testing, security, APIs, payments, AI features): the industry standard, named with its source, and the rules that matter. `stacks/README.md` says which to read when |
 | **Project** | `<project>/AGENTS.md` | This project's facts: mode, stacks, commands, architecture, rules, design and voice, release steps |
 
 Each project's `AGENTS.md` starts with:
@@ -35,7 +35,7 @@ All of them point back into this folder. So:
 | A skill, a stack pack, or the global `AGENTS.md` | Nothing. It applies in the next agent session, in every project. Commit and push to keep the backup. |
 | **Add or rename a skill** | Run `sh install.sh` once in this folder (it creates the new links). Not per project. |
 | The `kit` helper (`bin/`) | Nothing (linked to `~/.local/bin/kit`). |
-| Templates (`templates/project/`) | Nothing for new projects. Existing projects keep their own copies (`AGENTS.md`, `.github/`); ask `/ka-setup-project` in a project to bring it up to date if needed. |
+| Templates (`templates/project/`) | Nothing for new projects. Existing projects keep their own copies (`AGENTS.md`, `.github/`); ask `/ka-project setup` in a project to bring it up to date if needed. |
 
 Per-project files (`<project>/AGENTS.md`, `<project>/CLAUDE.md`, `<project>/.github/`) change only inside that project, when its facts change.
 
@@ -59,7 +59,7 @@ What `install.sh` does:
 4. Adds to `~/.claude/settings.json` (merged, never overwritten): blocks reading `.env`, `private/` and key files; allows reading this kit.
 5. Installs the `kit` command to `~/.local/bin`.
 
-Labels used by the workflow, once per repo (`/ka-setup-project` does this for projects):
+Labels used by the workflow, once per repo (`/ka-project setup` does this for projects):
 ```sh
 # in agent-kit
 gh label create friction --color FBCA04; gh label create retro --color 1D76DB
@@ -69,7 +69,7 @@ for l in in-progress:FBCA04 sub-issue:C5DEF5 bug:D73A4A regression:B60205 lesson
 
 ## 4. Bringing a project onto the kit
 
-In the project: start `claude` or `codex` and type `/ka-setup-project`. On a new branch it:
+In the project: start `claude` or `codex` and type `/ka-project setup`. On a new branch it:
 1. Detects the stack and matches stack packs.
 2. Suggests a mode and asks you to confirm.
 3. Writes a short project `AGENTS.md` (moving long history files to `docs/history/`), adds `CLAUDE.md` (`@AGENTS.md`), CI and issue/PR templates, checks secrets, creates labels.
@@ -81,11 +81,11 @@ You decide at three checkpoints; the agent drives everything in between.
 
 1. **Start:** `/k-next` (where things stand) or `/k-task <idea>` (a new task).
 2. **Checkpoint 1, task:** you approve the written task. The agent creates the issue and a branch from the base branch.
-3. **Checkpoint 2, plan:** you approve the plan. A plan of size L becomes a split from `/k-lead`, with the question whether to run the workers automatically.
-4. The agent builds, verifies, runs the extra checks the project's Skill settings require (`/k-security`, `/k-design-check`), opens the pull request (`/k-ship`), and has it reviewed by a fresh reviewer subagent where the tool allows (otherwise it asks you to run `/k-review` in a new session). It fixes blockers.
+3. **Checkpoint 2, plan:** you approve the plan. For anything users see, it comes with a design from `/k-design`: who it is for, the flow, every state, and a quick mockup. A plan of size L becomes a split from `/k-lead`, with the question whether to run the workers automatically.
+4. The agent builds, verifies, runs the extra checks the project's Skill settings require (`/k-security`, `/k-design`), opens the pull request (`/k-ship`), and has it reviewed by a fresh reviewer subagent where the tool allows (otherwise it asks you to run `/k-review` in a new session). It fixes blockers.
 5. **Checkpoint 3, result:** you get the pull request, checks and verdict; you look and merge.
 
-It also stops when something is unclear, a safety rule or the hook blocks it, it needs to go outside the task's scope, or a check keeps failing. Say "step by step" (or set `### Flow` → `Control: step by step` with `/ka-tune`) to confirm every skill yourself. `/k-handoff` saves the state when you stop; `/k-release` is separate and only on request.
+It also stops when something is unclear, a safety rule or the hook blocks it, it needs to go outside the task's scope, or a check keeps failing. Say "step by step" (or set `### Flow` → `Control: step by step` with `/ka-project tune`) to confirm every skill yourself. `/k-handoff` saves the state when you stop; `/k-release` is separate and only on request.
 
 **Base branch.** A project's `AGENTS.md` may say `Base branch: <name>` (default `main`). Issue branches, pull requests, `/k-next`, `/k-ship`, `/k-review`, `/k-lead` and `kit work` follow it. Releases are cut from `main`. The pre-commit hook blocks commits on `main`/`master` only.
 
@@ -104,20 +104,19 @@ Kit skills use two prefixes: `k-` for doing work and `ka-` for administering the
 | `/k-review` | Independent review in a fresh session |
 | `/k-release` | Version, tag, release notes |
 | `/k-lead` | Split and track parallel work |
-| `/ka-setup-project` | Bring a repo onto the kit |
-| `/k-debug` | Bug → failing test → fix → proof |
-| `/k-refactor` | Restructure code with no behaviour change |
+| `/k-code` | The code expert: `build` a feature, `fix` a bug (failing test first), `refactor` (no behaviour change), `database` (safe migration) |
 | `/k-handoff` | Save where work stands before stopping |
 | `/k-security` | Security review of a change or the whole app |
-| `/k-design-check` | Visual/UX check in a browser |
+| `/k-design` | UI and UX: design a screen first (flow, states, mockup), check the built result after |
 | `/k-content` | Text in the project's voice, with options |
-| `/k-db-change` | Safe database migrations |
-| `/ka-tune` | Create or change a project's Skill settings, with questions |
+| `/ka-project` | `setup`: bring a repo onto the kit. `tune`: create or change its Skill settings, with questions |
 | `/ka-retro` | Monthly kit improvement (run in this folder) |
 | `kit work <n>` / `kit done <n>` / `kit list` | Worktrees for parallel agents |
 | `kit help` | List all skills with one line each |
 | `kit hooks` | Install the pre-commit hook in the current repo |
 | `kit stats [--all] [--days N]` | Workflow numbers from GitHub |
+
+**Skills with modes.** `/k-code`, `/k-design` and `/ka-project` are one skill each with several modes. The `SKILL.md` is a short front door that picks the mode (or takes it from you: `/k-code refactor`) and then follows that mode's own steps from `modes/<mode>.md` in the same folder, so each mode keeps its strict rules. One name to remember, no blurred procedures.
 
 ## 7. Making each project a bit different (Skill settings)
 
@@ -137,7 +136,7 @@ Voice: docs/brand/brand-strategy.md (Brand Voice, Terminology). Calm, plain, nev
 - Every kit skill reads its block first and applies it on top of its own steps.
 - Settings **add or tighten**; they never loosen the Safety rules. No block = kit default.
 - Keep blocks short; point to existing docs (voice, design system, threat model) instead of repeating them.
-- **Create or change them with `/ka-tune`** in the project: it reads what the repo already has, asks a few questions (security strictness, voice, design rules, review must-checks), shows a draft, and writes it after your OK. `/ka-tune content` changes just one skill.
+- **Create or change them with `/ka-project tune`** in the project: it reads what the repo already has, asks a few questions (security strictness, voice, design rules, review must-checks), shows a draft, and writes it after your OK. `/ka-project tune content` changes just one skill.
 - Need a genuinely different process? Write a project skill with a **new** name in `<project>/.agents/skills/`. Never copy a kit skill into a project to edit it — the copy stops getting kit improvements.
 
 Mode (product / prototype / sandbox) sets the overall strictness; Skill settings fine-tune single skills inside it.

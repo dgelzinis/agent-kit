@@ -1,11 +1,4 @@
----
-name: k-refactor
-description: Restructure code without changing what it does — tests green before, small steps, tests after each step, nothing else mixed in. Use when the user says /k-refactor or asks to clean up, simplify, split, rename or reorganise code.
----
-
-# /k-refactor — change the structure, not the behaviour
-
-> **Project settings first:** if the project's `AGENTS.md` has `## Skill settings` → `### /k-refactor`, read it and apply it on top of this skill. Settings add steps or tighten rules; they never loosen the kit's Safety rules.
+# Mode: refactor — change the structure, not the behaviour
 
 A refactor is done when the code is simpler and every test gives the same result as before.
 
@@ -16,5 +9,6 @@ A refactor is done when the code is simpler and every test gives the same result
 5. **Do one step, then check.** After each step run the relevant tests; after the last, the project's full checks. A test fails → undo that step and take a smaller one. Never edit a test to make it pass, unless the test only checked internal structure (say so in the pull request).
 6. **Keep behaviour identical.** Same inputs, same outputs, same errors, same public names and API shapes. Calculations give exactly the same numbers. If a caller must change, change all callers in the same step (`grep` for them).
 7. **Found a bug or something else worth changing?** Do not fix it here. Open an issue (label `bug` if it is one) and carry on.
-8. **Remove what the refactor made dead** (unused functions, files, imports) and nothing else.
-9. **Prove it** in the pull request (`/k-ship`): what moved where, the baseline and final test results, which tests were added first, anything checked by hand, and the issues opened along the way.
+8. **Bring in the other experts where the refactor went:** security-sensitive code (sign-in, permissions, payments, personal data, AI calls) → `/k-security` on the diff, to confirm no check was weakened or dropped; anything rendered on screen → `/k-design` check, to confirm it looks and behaves the same.
+9. **Remove what the refactor made dead** (unused functions, files, imports) and nothing else.
+10. **Prove it** in the pull request (`/k-ship`): what moved where, the baseline and final test results, which tests were added first, anything checked by hand, and the issues opened along the way.

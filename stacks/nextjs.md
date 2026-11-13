@@ -1,5 +1,7 @@
 # Stack pack: Next.js (marketing and content sites)
 
+**Standards:** the Next.js docs for the installed version (nextjs.org/docs), Core Web Vitals (web.dev/vitals) for speed, Google Search Central (developers.google.com/search) for SEO, and WCAG 2.2 AA for accessibility (see the `ux` pack).
+
 ## Content and SEO
 - Every page: unique `title` and meta description, one `h1`, canonical URL, Open Graph image and text. Use the framework's metadata API, not hand-written tags.
 - `sitemap` and `robots` generated from the real routes; no links to pages that 404 (check internal links when adding or renaming pages).

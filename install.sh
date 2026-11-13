@@ -51,6 +51,7 @@ for d in "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.claude/agents"; d
 done
 for dir in "$KIT"/skills/*/; do
   name=$(basename "$dir")
+  if [ ! -f "$dir/SKILL.md" ]; then rmdir "$dir" 2>/dev/null || true; continue; fi
   link "$KIT/skills/$name" "$HOME/.agents/skills/$name"
   link "$KIT/skills/$name" "$HOME/.claude/skills/$name"
   echo "  $name"
@@ -67,8 +68,8 @@ for dir in "$KIT"/admin/*/; do
   echo "  $name"
 done
 
-w=$(ls -d "$KIT"/skills/k-*/ 2>/dev/null | wc -l | tr -d ' ')
-a=$(ls -d "$KIT"/skills/ka-*/ "$KIT"/admin/*/ 2>/dev/null | wc -l | tr -d ' ')
+w=$(ls "$KIT"/skills/k-*/SKILL.md 2>/dev/null | wc -l | tr -d ' ')
+a=$(ls "$KIT"/skills/ka-*/SKILL.md "$KIT"/admin/*/SKILL.md 2>/dev/null | wc -l | tr -d ' ')
 echo "  $w of 15 work skills, $a of 5 admin skills"
 [ "$w" -gt 15 ] && echo "  WARNING: more than 15 work skills. Replace or merge one."
 [ "$a" -gt 5 ] && echo "  WARNING: more than 5 admin skills. Replace or merge one."

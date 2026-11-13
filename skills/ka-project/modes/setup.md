@@ -1,14 +1,9 @@
----
-name: ka-setup-project
-description: Bring a repository onto the agent-kit workflow — project AGENTS.md, CLAUDE.md import, CI, issue and PR templates, secret protection. Use when the user says /ka-setup-project or starts working in a repo without an AGENTS.md that follows the kit template.
----
-
-# /ka-setup-project — onboard a repo to the kit
+# Mode: setup — bring a repo onto the kit
 
 Work on a branch: `git switch -c chore/agent-kit-setup`. Templates are in `~/GIT/agent-kit/templates/project/`.
 
 1. **Inspect** (cheaply): manifest files (`package.json`, `pyproject.toml`, `go.mod`…), lockfile → package manager, framework, test runner, existing CI (`.github/workflows`), existing agent files (`AGENTS.md`, `CLAUDE.md`, `.cursor/rules`, `.agents/`, memory/ledger files), secret-looking files (`.env*`, `private/`, keys).
-2. **Stacks:** match what you found to the packs in `~/GIT/agent-kit/stacks/` and list them in the `Stacks:` line. A technology without a pack: note it in the PR (a pack may be worth writing).
+2. **Stacks:** match what you found to the packs in `~/GIT/agent-kit/stacks/` and list them in the `Stacks:` line. Also note which problem packs the project will need (`payments-stripe`, `ai-llm`, `api`…). A technology or recurring problem without a pack: note it in the PR and offer to draft one from the official docs (Standards line with sources, then rules; about 40 lines) as a pull request to the kit.
 3. **Suggest a mode** and confirm it with the user before going further:
    - `product`: has a deployed site with sign-in, payments, real users or real personal data.
    - `prototype`: an app being built, deployed or not, without real users yet.
@@ -21,7 +16,7 @@ Work on a branch: `git switch -c chore/agent-kit-setup`. Templates are in `~/GIT
 5. **`CLAUDE.md`** at the root containing just `@AGENTS.md` (Claude Code does not read AGENTS.md on its own). Same in any subfolder that has its own `AGENTS.md`.
 6. **GitHub**: copy `templates/project/github/` into the repo as `.github/` (CI, issue template, PR template). Adapt CI steps to the real commands; keep existing workflows unless they duplicate. Required checks should be fast and reliable; slow or flaky checks run but are not required.
 7. **Secrets**: ensure `.gitignore` covers `.env*` (except `.env.example`) and private folders. List any secret files found inside the repo folder and recommend moving them out — do not move or delete them yourself.
-8. **Skill settings:** run `/ka-tune` (it asks a few questions — security strictness, content voice, design rules, review must-checks — and writes `## Skill settings`). Skip for `sandbox` unless the owner wants it.
+8. **Skill settings:** run `/ka-project tune` (it asks a few questions — security strictness, content voice, design rules, review must-checks — and writes `## Skill settings`). Skip for `sandbox` unless the owner wants it.
 9. **Project skills**: keep project-specific skills in `.agents/skills/`. If an existing skill duplicates a kit skill, propose replacing it and move its project-specific parts into `## Skill settings` (or `AGENTS.md` → Release).
 10. **Hooks:** run `kit hooks` in the repo (pre-commit: no commits on `main`, secret scan). If the repo keeps hooks in a tracked folder (`core.hooksPath`), add a `pre-commit` there that calls `~/GIT/agent-kit/hooks/pre-commit`. For `product` projects also add `.github/dependabot.yml` (security updates) and tell the owner to switch on Dependabot alerts.
 11. **Labels**: `for l in in-progress:FBCA04 sub-issue:C5DEF5 bug:D73A4A regression:B60205 lesson:0E8A16 security:5319E7; do gh label create "${l%%:*}" --color "${l##*:}" --force; done`.

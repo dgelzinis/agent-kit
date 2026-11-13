@@ -12,6 +12,7 @@ description: Write an implementation plan for a GitHub issue, post it on the iss
 3. **Write the plan** (short, concrete):
    ```
    ## Plan
+   **Mode:** build | fix | refactor | database (which `/k-code` mode the work is; see that skill).
    **Approach:** 2–4 sentences.
    **Files:** path — what changes (one line each).
    **Tests:** which tests are added or changed, and for which "Done when" point.
@@ -19,7 +20,8 @@ description: Write an implementation plan for a GitHub issue, post it on the iss
    **Out of scope:** what this deliberately does not do.
    **Size:** S (<1h) / M (half a day) / L (bigger).
    ```
-4. **Size L?** Do not present one big plan. Switch to `/k-lead` now and present its split as checkpoint 2 instead.
-5. **Post it**: pipe the plan to `gh issue comment <n> --body-file -` (no temporary files inside the repo) and show it to the user.
-6. **Checkpoint 2 of 3: stop and wait** for "ok" or corrections. Do not write code before approval. If the user changes the plan, post a new comment marked "Plan v2".
-7. **After the OK, carry on without waiting for another command:** make sure you are on the issue's branch (`<issue>-<short-name>`, from `<base>`), build, verify, then `/k-ship`. `<base>` is the project's `Base branch:` (default `main`).
+4. **Changes what users see?** Run `/k-design` in design mode now and present its result (who and why, flow, states, mockup) together with the plan at checkpoint 2.
+5. **Size L?** Do not present one big plan. Switch to `/k-lead` now and present its split as checkpoint 2 instead.
+6. **Post it**: pipe the plan to `gh issue comment <n> --body-file -` (no temporary files inside the repo) and show it to the user.
+7. **Checkpoint 2 of 3: stop and wait** for "ok" or corrections. Do not write code before approval. If the user changes the plan, post a new comment marked "Plan v2".
+8. **After the OK, carry on without waiting for another command:** make sure you are on the issue's branch (`<issue>-<short-name>`, from `<base>`), then `/k-code` in the plan's mode (it builds and verifies), then `/k-ship`. `<base>` is the project's `Base branch:` (default `main`).

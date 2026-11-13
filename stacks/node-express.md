@@ -1,5 +1,7 @@
 # Stack pack: Node.js + Express
 
+**Standards:** Express "Production best practices" for security and performance (expressjs.com), the Node.js docs (nodejs.org/docs), and the Twelve-Factor App (12factor.net) for configuration, logs and processes. For routes see the `api` pack; for auth and input see the `security` pack.
+
 ## Requests
 - Validate every body, query and param on the server (shared schema/rules where the project has them). Reject unknown fields for writes; whitelist what can be updated.
 - Authorization in every route that touches data: who is the user, may they do this to *this* record. Middleware order matters — auth before routes, error handler last.

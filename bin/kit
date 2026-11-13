@@ -21,7 +21,7 @@ if [ "$cmd" = help ] || [ -z "$cmd" ]; then
   echo ""
   echo "WORK (k-): in any project"
   seen=""
-  for n in next task plan ship review release debug refactor handoff db-change design-check content security lead; do
+  for n in next task plan code design content ship review security release lead handoff; do
     f="$kit/skills/k-$n/SKILL.md"; [ -f "$f" ] && { line "$f"; seen="$seen k-$n"; }
   done
   for f in "$kit"/skills/k-*/SKILL.md; do
@@ -34,8 +34,8 @@ if [ "$cmd" = help ] || [ -z "$cmd" ]; then
   echo "KIT MAINTENANCE (ka-): only inside $kit"
   for f in "$kit"/admin/*/SKILL.md; do [ -f "$f" ] && line "$f"; done
   echo ""
-  w=$(ls -d "$kit"/skills/k-*/ 2>/dev/null | wc -l | tr -d ' ')
-  a=$(ls -d "$kit"/skills/ka-*/ "$kit"/admin/*/ 2>/dev/null | wc -l | tr -d ' ')
+  w=$(ls "$kit"/skills/k-*/SKILL.md 2>/dev/null | wc -l | tr -d ' ')
+  a=$(ls "$kit"/skills/ka-*/SKILL.md "$kit"/admin/*/SKILL.md 2>/dev/null | wc -l | tr -d ' ')
   echo "Count:       $w of 15 work skills, $a of 5 admin skills"
   echo "Daily flow:  /k-next or /k-task <idea>  ->  you OK the task  ->  you OK the plan  ->  agent builds, ships, reviews  ->  you look and merge"
   echo "Terminal:    kit help | kit work <issue> | kit done <issue> | kit list | kit hooks | kit stats [--all]"
