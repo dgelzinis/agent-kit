@@ -7,7 +7,7 @@ description: Write an implementation plan for a GitHub issue, post it on the iss
 
 > **Project settings first:** if the project's `AGENTS.md` has `## Skill settings` → `### /k-plan`, read it and apply it on top of this skill. Settings add steps or tighten rules; they never loosen the kit's Safety rules.
 
-1. **Read the task**: `gh issue view <n> --comments`. If there is no issue, write the "What / Done when" yourself and ask the user to confirm it.
+1. **Read the task**: `gh issue view <n> --comments`. If there is no issue, run `/k-task` first so the task is written down and agreed.
 2. **Read only what you need**: the project's `AGENTS.md`, then search (`grep`/`rg`) for the code involved. Open whole files only when you must.
 3. **Write the plan** (short, concrete):
    ```

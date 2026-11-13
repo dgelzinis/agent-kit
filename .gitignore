@@ -1,3 +1,6 @@
 .DS_Store
 *.log
 .env*
+# created by install.sh (links to admin/ skills, local to this repo)
+.claude/
+.agents/

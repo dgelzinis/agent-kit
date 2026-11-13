@@ -35,7 +35,7 @@ All of them point back into this folder. So:
 | A skill, a stack pack, or the global `AGENTS.md` | Nothing. It applies in the next agent session, in every project. Commit and push to keep the backup. |
 | **Add or rename a skill** | Run `sh install.sh` once in this folder (it creates the new links). Not per project. |
 | The `kit` helper (`bin/`) | Nothing (linked to `~/.local/bin/kit`). |
-| Templates (`templates/project/`) | Nothing for new projects. Existing projects keep their own copies (`AGENTS.md`, `.github/`); ask `/k-setup-project` in a project to bring it up to date if needed. |
+| Templates (`templates/project/`) | Nothing for new projects. Existing projects keep their own copies (`AGENTS.md`, `.github/`); ask `/ka-setup-project` in a project to bring it up to date if needed. |
 
 Per-project files (`<project>/AGENTS.md`, `<project>/CLAUDE.md`, `<project>/.github/`) change only inside that project, when its facts change.
 
@@ -59,7 +59,7 @@ What `install.sh` does:
 4. Adds to `~/.claude/settings.json` (merged, never overwritten): blocks reading `.env`, `private/` and key files; allows reading this kit.
 5. Installs the `kit` command to `~/.local/bin`.
 
-Labels used by the workflow, once per repo (`/k-setup-project` does this for projects):
+Labels used by the workflow, once per repo (`/ka-setup-project` does this for projects):
 ```sh
 # in agent-kit
 gh label create friction --color FBCA04; gh label create retro --color 1D76DB
@@ -69,7 +69,7 @@ for l in in-progress:FBCA04 sub-issue:C5DEF5 bug:D73A4A regression:B60205 lesson
 
 ## 4. Bringing a project onto the kit
 
-In the project: start `claude` or `codex` and type `/k-setup-project`. On a new branch it:
+In the project: start `claude` or `codex` and type `/ka-setup-project`. On a new branch it:
 1. Detects the stack and matches stack packs.
 2. Suggests a mode and asks you to confirm.
 3. Writes a short project `AGENTS.md` (moving long history files to `docs/history/`), adds `CLAUDE.md` (`@AGENTS.md`), CI and issue/PR templates, checks secrets, creates labels.
@@ -95,25 +95,27 @@ Parallel work on a big issue: `/k-lead #12` splits it into sub-issues; `kit work
 
 ## 6. All commands
 
-Every kit skill starts with `k-`, so it cannot collide with a tool's built-in commands (plain `/review`, `/plan`, `/debug`, `/security-review` are built-ins that do something else). Claude Code: `/k-<name>` (type `/k-` to see them all). Codex: `$k-<name>`, or pick from `/skills`. Gemini CLI: say "activate the k-<name> skill" (it asks permission; check with `/skills list`). Any other agent: tell it to read `~/GIT/agent-kit/skills/k-<name>/SKILL.md` and follow it. To look them up: `kit help` in a terminal, the cheat sheet at the top of `README.md`, or ask the agent "what can the kit do?".
+Kit skills use two prefixes: `k-` for doing work and `ka-` for administering the kit and a project's setup (`ka-retro` is listed only inside the agent-kit repo). The prefix means a skill cannot collide with a tool's built-in commands (plain `/review`, `/plan`, `/debug`, `/security-review` are built-ins that do something else). Claude Code: `/k-<name>` (type `/k-` or `/ka-` to see them). Codex: `$k-<name>`, or pick from `/skills`. Gemini CLI: say "activate the k-<name> skill" (it asks permission; check with `/skills list`). Any other agent: tell it to read `~/GIT/agent-kit/skills/k-<name>/SKILL.md` and follow it. To look them up: `kit help` in a terminal, the cheat sheet at the top of `README.md`, or ask the agent "what can the kit do?".
 
 | Command | Use it for |
 |---|---|
 | `/k-next` | Start of a session: what's open, what's next |
+| `/k-task` | Turn a rough idea into a clear issue |
 | `/k-plan` | Plan an issue; waits for approval |
 | `/k-ship` | Verify and open a PR |
 | `/k-review` | Independent review in a fresh session |
 | `/k-release` | Version, tag, release notes |
 | `/k-lead` | Split and track parallel work |
-| `/k-setup-project` | Bring a repo onto the kit |
+| `/ka-setup-project` | Bring a repo onto the kit |
 | `/k-debug` | Bug → failing test → fix → proof |
+| `/k-refactor` | Restructure code with no behaviour change |
 | `/k-handoff` | Save where work stands before stopping |
 | `/k-security` | Security review of a change or the whole app |
 | `/k-design-check` | Visual/UX check in a browser |
 | `/k-content` | Text in the project's voice, with options |
 | `/k-db-change` | Safe database migrations |
-| `/k-tune` | Create or change a project's Skill settings, with questions |
-| `/k-retro` | Monthly kit improvement (run in this folder) |
+| `/ka-tune` | Create or change a project's Skill settings, with questions |
+| `/ka-retro` | Monthly kit improvement (run in this folder) |
 | `kit work <n>` / `kit done <n>` / `kit list` | Worktrees for parallel agents |
 | `kit help` | List all skills with one line each |
 | `kit hooks` | Install the pre-commit hook in the current repo |
@@ -137,7 +139,7 @@ Voice: docs/brand/brand-strategy.md (Brand Voice, Terminology). Calm, plain, nev
 - Every kit skill reads its block first and applies it on top of its own steps.
 - Settings **add or tighten**; they never loosen the Safety rules. No block = kit default.
 - Keep blocks short; point to existing docs (voice, design system, threat model) instead of repeating them.
-- **Create or change them with `/k-tune`** in the project: it reads what the repo already has, asks a few questions (security strictness, voice, design rules, review must-checks), shows a draft, and writes it after your OK. `/k-tune content` changes just one skill.
+- **Create or change them with `/ka-tune`** in the project: it reads what the repo already has, asks a few questions (security strictness, voice, design rules, review must-checks), shows a draft, and writes it after your OK. `/ka-tune content` changes just one skill.
 - Need a genuinely different process? Write a project skill with a **new** name in `<project>/.agents/skills/`. Never copy a kit skill into a project to edit it — the copy stops getting kit improvements.
 
 Mode (product / prototype / sandbox) sets the overall strictness; Skill settings fine-tune single skills inside it.
@@ -148,7 +150,7 @@ Mode (product / prototype / sandbox) sets the overall strictness; Skill settings
 - **Where a lesson ends up:** project code → a test or lint rule (else one line in the project's Rules); a technology → its stack pack; how agents work → this kit. Prefer enforcing over writing down.
 - **Friction:** when a kit rule or skill gets in the way, or you correct an agent on how to work, the agent opens an issue in this repo labelled `friction`.
 - **Measure:** `kit stats --all` shows merged PRs, hours to merge, PR size, review blockers, CI failures, bugs, lessons and security findings per project.
-- **Improve:** once a month, start an agent in this folder and run `/k-retro`. It measures, reads lessons and friction, checks whether last month's changes helped, and opens a PR with at most 3 changes plus a `retro` issue with next month's targets. You approve. It never loosens the safety rules.
+- **Improve:** once a month, start an agent in this folder and run `/ka-retro`. It measures, reads lessons and friction, checks whether last month's changes helped, and opens a PR with at most 3 changes plus a `retro` issue with next month's targets. You approve. It never loosens the safety rules.
 
 ## 9. Enforcement (rules the computer checks)
 
@@ -167,7 +169,7 @@ The hook works for every tool and for you. Bypass only when you mean it: `KIT_AL
 ## 10. Changing the kit yourself
 
 - Edit a skill or rule → save → commit and push. Done.
-- New skill → `skills/<name>/SKILL.md` with `name` and `description` at the top, add it to the table in `AGENTS.md` → Skills, run `sh install.sh`.
+- New skill → `skills/k-<name>/SKILL.md` (work), `skills/ka-<name>/SKILL.md` (project admin) or `admin/ka-<name>/SKILL.md` (kit-only, linked just inside this repo) with `name` and `description` at the top, add it to the table in `AGENTS.md` → Skills, run `sh install.sh`.
 - New stack pack → `stacks/<tech>.md` (under ~40 lines), then list it in the projects that use it (`Stacks:` line).
-- Keep the kit small: about 10–15 skills. Every skill's description is loaded into every session.
+- Size limit: at most 15 work skills (`k-`) and 5 admin skills (`ka-`). At the limit, a new skill replaces or merges with an existing one. Every skill's description is loaded into every session, so fewer is better. `kit help` shows the count; `install.sh` warns when the limit is passed.
 - Undo a change: `git log` to find it, `git revert <commit>`.

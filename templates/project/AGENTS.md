@@ -32,7 +32,7 @@ Only rules that are specific to this project and not obvious from the code. Pref
 -
 
 ## Skill settings
-<!-- Tunes kit skills for this project (strictness, voice, extra checks). Adds or tightens; never loosens Safety. Create/edit with /k-tune. Empty = kit defaults. -->
+<!-- Tunes kit skills for this project (strictness, voice, extra checks). Adds or tightens; never loosens Safety. Create/edit with /ka-tune. Empty = kit defaults. -->
 
 ## Design and voice
 - Design rules: <path, e.g. docs/brand/design-system.md> (used by `/k-design-check`)

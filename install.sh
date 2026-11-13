@@ -1,8 +1,10 @@
 #!/bin/sh
 # agent-kit installer. Safe to run again after every change to the kit.
 #  - Links the global rules into Claude Code, Codex and Gemini CLI.
-#  - Links each skill into ~/.agents/skills (Codex, Gemini, Copilot) and ~/.claude/skills (Claude Code),
+#  - Links each skill in skills/ into ~/.agents/skills (Codex, Gemini, Copilot) and ~/.claude/skills (Claude Code),
 #    one link per skill, so skills you installed yourself stay untouched.
+#  - Links the kit-only admin skills in admin/ into this repo's own .claude/skills and .agents/skills,
+#    so they show up only when you work inside the kit.
 #  - Adds secret-file deny rules to ~/.claude/settings.json (merged, never overwritten).
 #  - Installs the `kit` helper to ~/.local/bin.
 # Anything it would replace is first copied to ~/.agent-kit-backup/<time>/.
@@ -53,6 +55,23 @@ for dir in "$KIT"/skills/*/; do
   link "$KIT/skills/$name" "$HOME/.claude/skills/$name"
   echo "  $name"
 done
+
+echo "Kit-only admin skills (visible only when working inside $KIT)"
+for dir in "$KIT"/admin/*/; do
+  [ -d "$dir" ] || continue
+  name=$(basename "$dir")
+  for d in "$KIT/.claude/skills" "$KIT/.agents/skills"; do
+    mkdir -p "$d"
+    ln -sfn "../../admin/$name" "$d/$name"
+  done
+  echo "  $name"
+done
+
+w=$(ls -d "$KIT"/skills/k-*/ 2>/dev/null | wc -l | tr -d ' ')
+a=$(ls -d "$KIT"/skills/ka-*/ "$KIT"/admin/*/ 2>/dev/null | wc -l | tr -d ' ')
+echo "  $w of 15 work skills, $a of 5 admin skills"
+[ "$w" -gt 15 ] && echo "  WARNING: more than 15 work skills. Replace or merge one."
+[ "$a" -gt 5 ] && echo "  WARNING: more than 5 admin skills. Replace or merge one."
 
 echo "Claude Code subagents"
 for f in "$KIT"/claude/agents/*.md; do

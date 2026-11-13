@@ -1,9 +1,9 @@
 ---
-name: k-tune
-description: Create or update a project's Skill settings — how strict security is, the content voice, design rules, extra review checks and so on — by asking the owner a few questions and writing them into the project's AGENTS.md. Use when the user says /k-tune, wants a project to behave differently from the kit defaults, or /k-setup-project reaches its settings step.
+name: ka-tune
+description: Create or update a project's Skill settings — how strict security is, the content voice, design rules, extra review checks and so on — by asking the owner a few questions and writing them into the project's AGENTS.md. Use when the user says /ka-tune, wants a project to behave differently from the kit defaults, or /ka-setup-project reaches its settings step.
 ---
 
-# /k-tune — make the kit fit this project
+# /ka-tune — make the kit fit this project
 
 Kit skills are the same everywhere. Each project tunes them in its `AGENTS.md` under `## Skill settings`, one `### /<skill>` block per skill that needs something different. No block = the kit default.
 
@@ -15,7 +15,7 @@ Kit skills are the same everywhere. Each project tunes them in its `AGENTS.md` u
 
 ## Flow
 1. **Read** the project's `AGENTS.md` (mode, stacks, existing `## Skill settings`) and skim what exists: brand/voice docs, design system, security/architecture docs, legal pages. Note what you found — do not ask for things the repo already answers.
-2. **Ask** (use your question tool if you have one; otherwise a short numbered list). Offer a recommended answer for each, based on what you found. `/k-tune <skill>` asks only about that skill.
+2. **Ask** (use your question tool if you have one; otherwise a short numbered list). Offer a recommended answer for each, based on what you found. `/ka-tune <skill>` asks only about that skill.
    1. **Security** — how strict? *standard* (kit default) / *strict* (sensitive data, payments, finance, health: run on every PR touching backend, data or AI; "should fix" in auth/payments counts as a blocker). Any extra checks (regulations, data that must never leave, spend caps)?
    2. **Content voice** — who reads it, tone in 3 words, words to use / avoid, language and spelling, emoji yes/no. Existing voice doc to point to?
    3. **Design** — where are the design rules, which screen widths matter, how to open the app with demo data?
@@ -29,7 +29,7 @@ Kit skills are the same everywhere. Each project tunes them in its `AGENTS.md` u
 ## Format
 ```markdown
 ## Skill settings
-<!-- Tunes kit skills for this project. Adds or tightens; never loosens Safety. Edit with /k-tune. -->
+<!-- Tunes kit skills for this project. Adds or tightens; never loosens Safety. Edit with /ka-tune. -->
 
 ### /k-security
 Level: strict. Run on every PR touching <paths>, not only before releases.

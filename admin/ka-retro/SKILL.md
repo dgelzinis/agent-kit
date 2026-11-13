@@ -1,15 +1,16 @@
 ---
-name: k-retro
-description: Monthly improvement run for the agent-kit — measure how the workflow performed across projects, turn lessons and friction into tests, rules or kit changes, and check whether last month's changes helped. Use when the user says /k-retro or on the monthly schedule.
+name: ka-retro
+description: Monthly improvement run for the agent-kit — measure how the workflow performed across projects, turn lessons and friction into tests, rules or kit changes, and check whether last month's changes helped. Use when the user says /ka-retro or on the monthly schedule.
 ---
 
-# /k-retro — measure, learn, improve the kit
+# /ka-retro — measure, learn, improve the kit
 
 Run from `~/GIT/agent-kit`. Output is a pull request to this repo that the owner approves. Never merge it yourself.
 
 ## Guardrails
 - Never loosen anything in `AGENTS.md` → Safety, and never remove a safety check, review or test requirement for `product` mode. Only the owner changes those.
 - At most **3 proposals** per retro, each one small and with its evidence and the number it should move.
+- The kit holds at most 15 work skills (`k-`) and 5 admin skills (`ka-`). A proposal for a new skill at the limit must name the one it replaces or merges with. A skill nobody used in two retros is a candidate to remove.
 - Skills stay short (a `SKILL.md` well under ~80 lines; stack packs under ~40). Prefer replacing text over adding it.
 
 ## 1. Measure

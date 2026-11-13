@@ -19,36 +19,48 @@ The first lines of the project's `AGENTS.md` say `Mode: product`, `Mode: prototy
 The Safety rules below apply in every mode. The rest of this file describes `product`; relax it as the table says.
 
 ## How we work
-1. **Work comes from a GitHub issue.** Start with `/k-next` if no issue is given. No issue → ask, or create one with `gh issue create` after I agree.
+1. **Work comes from a GitHub issue.** Start with `/k-next` if no issue is given. I describe something without an issue → use `/k-task` to write it up, and create the issue after I agree.
 2. **Plan before code.** For anything beyond a one-line fix, run `/k-plan` and wait for my OK.
 3. **Never commit to `main`.** One branch per issue: `<issue>-<short-name>` (e.g. `42-loan-what-if`).
 4. **Stay in scope.** Only change what the issue needs. If shared code must change, or you find another problem, comment on the issue (or open a new one) and continue only with my OK.
-5. **Done means verified.** Run the project's lint, test and build commands (from its `AGENTS.md` → Commands) until they pass. New logic gets a test; money, dates and permissions always do. Bugs go through `/k-debug`; UI changes get a `/k-design-check` before `/k-ship`.
+5. **Done means verified.** Run the project's lint, test and build commands (from its `AGENTS.md` → Commands) until they pass. New logic gets a test; money, dates and permissions always do. Bugs go through `/k-debug`; restructuring goes through `/k-refactor`, in its own pull request; UI changes get a `/k-design-check` before `/k-ship`.
 6. **Ship through a pull request.** Use `/k-ship`. The PR title is a Conventional Commit (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`, `test:`) and the body says `Closes #<issue>`.
 7. **Someone else reviews.** `/k-review` runs in a fresh session. I merge; agents never merge.
 8. **Releases are separate.** Only `/k-release`, only when I ask.
 
 ## Skills (slash commands)
-All kit skills start with `k-` so they never collide with a tool's built-in commands (`/review`, `/plan`, `/debug`, `/security-review` are built-ins and do something else). Claude Code: type `/k-next`. Codex: type `$k-next` or pick it from `/skills`. If your tool does not list a skill, read its file and follow it. When I ask "what can the kit do?", answer from this table (or tell me to run `kit help`).
+Kit skills use a prefix so they never collide with a tool's built-in commands (plain `/review`, `/plan`, `/debug`, `/security-review` are built-ins and do something else): **`k-` for doing work, `ka-` for administering the kit and a project's setup.** Claude Code: type `/k-next`. Codex: `$k-next` or pick from `/skills`. Gemini CLI: "activate the k-next skill". If your tool does not list a skill, read its file and follow it. When I ask "what can the kit do?", answer from these tables (or tell me to run `kit help`).
 
-| Command | File |
+Work skills (`k-`), in `~/GIT/agent-kit/skills/<name>/SKILL.md`:
+
+| Command | For |
 |---|---|
-| `/k-next` | `~/GIT/agent-kit/skills/k-next/SKILL.md` |
-| `/k-plan` | `~/GIT/agent-kit/skills/k-plan/SKILL.md` |
-| `/k-ship` | `~/GIT/agent-kit/skills/k-ship/SKILL.md` |
-| `/k-review` | `~/GIT/agent-kit/skills/k-review/SKILL.md` |
-| `/k-release` | `~/GIT/agent-kit/skills/k-release/SKILL.md` |
-| `/k-lead` | `~/GIT/agent-kit/skills/k-lead/SKILL.md` |
-| `/k-setup-project` | `~/GIT/agent-kit/skills/k-setup-project/SKILL.md` |
-| `/k-debug` | `~/GIT/agent-kit/skills/k-debug/SKILL.md` |
-| `/k-handoff` | `~/GIT/agent-kit/skills/k-handoff/SKILL.md` |
-| `/k-security` | `~/GIT/agent-kit/skills/k-security/SKILL.md` |
-| `/k-design-check` | `~/GIT/agent-kit/skills/k-design-check/SKILL.md` |
-| `/k-content` | `~/GIT/agent-kit/skills/k-content/SKILL.md` |
-| `/k-db-change` | `~/GIT/agent-kit/skills/k-db-change/SKILL.md` |
-| `/k-tune` | `~/GIT/agent-kit/skills/k-tune/SKILL.md` |
-| `/k-retro` | `~/GIT/agent-kit/skills/k-retro/SKILL.md` (monthly, from the agent-kit repo) |
-**Per-project tuning:** a project's `AGENTS.md` may have `## Skill settings` with a `### /<skill>` block. Before running a kit skill, read its block and apply it on top: settings add steps or tighten rules (e.g. stricter security, the project's voice), never loosen Safety. Edit them with `/k-tune`.
+| `/k-next` | start of a session: where things stand, what is next |
+| `/k-task` | turn a rough idea into a clear issue (what, why, done when) |
+| `/k-plan` | plan an issue and wait for approval |
+| `/k-ship` | verify and open a pull request |
+| `/k-review` | independent review in a fresh session |
+| `/k-release` | version, tag, release notes |
+| `/k-lead` | split and track parallel work |
+| `/k-debug` | bug → failing test → fix → proof |
+| `/k-refactor` | restructure code with no behaviour change |
+| `/k-handoff` | save where work stands before stopping |
+| `/k-security` | security review |
+| `/k-design-check` | visual and UX check in a browser |
+| `/k-content` | text in the project's voice |
+| `/k-db-change` | safe database migrations |
+
+Size limit for the kit: at most 15 work skills and 5 admin skills. If I ask for a new skill at the limit, say so and propose which one to replace or merge instead of adding a 16th or 6th.
+
+Admin skills (`ka-`). Run them only when I ask; never start one on your own in the middle of project work:
+
+| Command | File | For |
+|---|---|---|
+| `/ka-setup-project` | `~/GIT/agent-kit/skills/ka-setup-project/SKILL.md` | bring a repo onto the kit |
+| `/ka-tune` | `~/GIT/agent-kit/skills/ka-tune/SKILL.md` | create or change a project's Skill settings |
+| `/ka-retro` | `~/GIT/agent-kit/admin/ka-retro/SKILL.md` | monthly kit improvement; available only inside the agent-kit repo |
+
+**Per-project tuning:** a project's `AGENTS.md` may have `## Skill settings` with a `### /<skill>` block. Before running a kit skill, read its block and apply it on top: settings add steps or tighten rules (e.g. stricter security, the project's voice), never loosen Safety. Edit them with `/ka-tune`.
 A project may add its own skills in `.agents/skills/` under new names; do not copy a kit skill into a project to change it.
 
 ## Stack packs
@@ -69,7 +81,7 @@ The project's `AGENTS.md` lists its technologies (`Stacks: react-vite, node-expr
 
 ## Lessons and friction (how the kit improves)
 - **Lessons:** when a bug or mistake teaches something beyond the single issue, write symptom → cause → fix → prevention on the issue and add the label `lesson`. Before working in an area, search past lessons: `gh issue list --label lesson --state all --search "<area>"`.
-- **Where a lesson ends up:** this project's code → a test or lint rule (else one line in the project's Rules); a technology → its stack pack; how agents work → this kit. `/k-retro` proposes the promotion; the owner approves.
+- **Where a lesson ends up:** this project's code → a test or lint rule (else one line in the project's Rules); a technology → its stack pack; how agents work → this kit. `/ka-retro` proposes the promotion; the owner approves.
 - **Friction:** when a kit rule or skill is unclear, wrong, or conflicts with the project — or the owner corrects you on how to work — open an issue: `gh issue create -R dgelzinis/agent-kit --label friction --title "<skill or rule>: <problem>" --body "<what happened, project, what would have helped>"`. One line of evidence is enough. Then continue with the owner's instruction.
 
 ## Parallel work (when `/k-lead` split an issue)

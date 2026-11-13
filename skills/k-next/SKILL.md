@@ -15,7 +15,7 @@ Keep this cheap: use `git` and `gh`, do not read docs or large files.
 2. **Open pull requests**: `gh pr list --author @me --json number,title,headRefName,statusCheckRollup,reviewDecision`
    - Note any with failing checks or waiting for merge.
 3. **Issues**: `gh issue list --state open --limit 30 --json number,title,labels,body`
-   - No open issues: say so and offer to create one from what the user wants to do (or from the project's roadmap, if it has one).
+   - No open issues: say so and offer `/k-task` to write one up from what the user wants to do (or from the project's roadmap, if it has one).
    - **Ready** = no `in-progress` label and every "Depends on #N" in the body is closed (`gh issue view N --json state`).
    - **Blocked** = has an unmerged dependency.
 4. **Report** (max ~15 lines):
