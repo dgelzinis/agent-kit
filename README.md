@@ -9,15 +9,16 @@ Write it once here; every project and every tool picks it up. Deeper detail for 
 1. [How it works](#how-it-works)
 2. [Quick start](#quick-start)
 3. [Cheat sheet: which skill when](#cheat-sheet-which-skill-when)
-4. [The daily flow](#the-daily-flow)
-5. [Using it in each tool](#using-it-in-each-tool)
-6. [Making a project different](#making-a-project-different)
-7. [What is enforced](#what-is-enforced)
-8. [Parallel work with several agents](#parallel-work-with-several-agents)
-9. [Lessons, measuring and improving](#lessons-measuring-and-improving)
-10. [Changing the kit](#changing-the-kit)
-11. [What's in this folder](#whats-in-this-folder)
-12. [Troubleshooting](#troubleshooting)
+4. [Examples: what to type](#examples-what-to-type)
+5. [The daily flow](#the-daily-flow)
+6. [Using it in each tool](#using-it-in-each-tool)
+7. [Making a project different](#making-a-project-different)
+8. [What is enforced](#what-is-enforced)
+9. [Parallel work with several agents](#parallel-work-with-several-agents)
+10. [Lessons, measuring and improving](#lessons-measuring-and-improving)
+11. [Changing the kit](#changing-the-kit)
+12. [What's in this folder](#whats-in-this-folder)
+13. [Troubleshooting](#troubleshooting)
 
 ## How it works
 
@@ -58,7 +59,7 @@ Two prefixes: **`k-` for doing work, `ka-` for administering the kit and a proje
 | finished building and want a pull request | `/k-ship` |
 | want an independent check of a pull request (fresh session) | `/k-review` |
 | want code written or changed: a feature (`build`), a bug (`fix`), a cleanup (`refactor`), a table or column (`database`) | `/k-code` (it picks the mode; or say `/k-code fix`) |
-| want a screen designed before it is built, design options, or a check of how something looks | `/k-design` |
+| want a screen designed before it is built, design options, a check of how something looks, or a design system created or changed | `/k-design` (modes: `design`, `check`, `system`) |
 | need text: headlines, buttons, emails, posts | `/k-content` |
 | touched sign-in, payments, user data or AI, or are about to release (the other skills also call it by themselves) | `/k-security` |
 | stop for the day or mid-task | `/k-handoff` |
@@ -75,6 +76,168 @@ Two prefixes: **`k-` for doing work, `ka-` for administering the kit and a proje
 Terminal helper: `kit help` · `kit work <issue>` · `kit done <issue>` · `kit list` · `kit hooks` · `kit stats [--all] [--days N]`
 
 The prefixes are deliberate: plain `/review`, `/plan`, `/debug` and `/security-review` are built into Claude Code or Codex and do something else.
+
+## Examples: what to type
+
+Real prompts, in your own words. The agent picks the skills and stops at the three checkpoints. Lines without a slash are plain messages to the agent.
+
+**Start and stop a session**
+```
+/k-next
+```
+```
+/k-handoff
+```
+
+**A new idea, a complaint, feedback from a user**
+```
+/k-task people can't see how much they still owe on the loans page
+```
+```
+/k-task new users don't understand what to do first after signing up
+```
+Several at once, without starting any of them:
+```
+Use /k-task to write up these four items as separate tasks. Show me all the drafts together before creating the issues, then stop.
+```
+
+**Work on what is already listed**
+```
+work on #4
+```
+```
+go one by one
+```
+
+**A bug**
+```
+/k-task the logout button sometimes leaves the previous account signed in
+```
+The plan names the mode (`fix`): failing test first, then the fix.
+
+**A cleanup, with no change in behaviour**
+```
+/k-code refactor split the assistant service into smaller files; nothing users see may change
+```
+
+**A database change**
+```
+/k-task we need to store a nickname per holding
+```
+The plan uses `database` mode: a migration file, access rules, and exact steps for you to apply it live.
+
+**Design and UX**
+
+Don't know yet what to improve:
+```
+/k-design check the Liabilities page
+```
+Want to see options before anything is built:
+```
+/k-design options for the Liabilities page: make the remaining balance easier to see
+```
+Know what you want changed:
+```
+/k-task the loan cards feel cramped on the phone, make them easier to read
+```
+A whole flow:
+```
+/k-design check the whole first-time experience: sign up, first portfolio, first Check-in
+```
+
+**A design system**
+
+Create one in a project that has none:
+```
+/k-design system create a design system based on the screens we have
+```
+Change the look everywhere:
+```
+/k-design system the cards feel heavy, lighten borders and spacing across the app
+```
+
+**Text**
+```
+/k-content three options for the headline on the pricing page
+```
+
+**Security**
+
+One change, or everything a branch adds:
+```
+/k-security
+```
+```
+Run /k-security on everything redesign adds over main. Report the findings and stop. Do not fix anything yet.
+```
+The whole app:
+```
+/k-security app
+```
+
+**Review a pull request with fresh eyes**
+```
+/k-review 12
+```
+
+**Finishing a long-lived branch before it goes live**
+```
+What is still open before redesign can go live? Check the plan docs, the Open handoffs list, and anything marked untested or "not done". Give me a short list, most important first. Do not create issues yet.
+```
+Then turn the must-haves into tasks with `/k-task`, work through them, run `/k-security` and `/k-design check` on the whole thing, and only then:
+```
+Open a pull request from redesign into main. Do not merge it.
+```
+You merge it yourself: merging into `main` is what deploys.
+
+**Merging, when you want the agent to do it for you**
+```
+I approve merging pull request #12 into redesign. First confirm that its target branch is redesign and that the CI checks are green. If either is not true, stop and tell me. Do not touch main.
+```
+
+**A feature too big for one agent**
+```
+/k-lead #50
+```
+```
+/k-lead status
+```
+You rarely need to type the first one: a plan that comes out large switches to the lead by itself.
+
+**A release**
+```
+/k-release
+```
+
+**More control, or less**
+```
+step by step
+```
+The agent then waits for you before every skill, not only at the three checkpoints.
+
+**Set up or tune a project**
+```
+/ka-project setup
+```
+```
+/ka-project tune security should be strict here, and the voice is playful and short
+```
+
+**Improve the kit itself** (monthly, inside `~/GIT/agent-kit`)
+```
+/ka-retro
+```
+
+**Useful one-liners at any time**
+```
+what can the kit do?
+```
+```
+What could go wrong with this plan? What are you not doing?
+```
+```
+Is this pull request set to merge into redesign, and not into main? Answer yes or no.
+```
 
 ## The daily flow
 

@@ -107,7 +107,7 @@ Kit skills use two prefixes: `k-` for doing work and `ka-` for administering the
 | `/k-code` | The code expert: `build` a feature, `fix` a bug (failing test first), `refactor` (no behaviour change), `database` (safe migration) |
 | `/k-handoff` | Save where work stands before stopping |
 | `/k-security` | Security review of a change or the whole app |
-| `/k-design` | UI and UX: design a screen first (flow, states, mockup), check the built result after |
+| `/k-design` | UI and UX: `design` a screen first (flow, states, mockup), `check` the built result after, `system` to create or revise the design system |
 | `/k-content` | Text in the project's voice, with options |
 | `/ka-project` | `setup`: bring a repo onto the kit. `tune`: create or change its Skill settings, with questions |
 | `/ka-retro` | Monthly kit improvement (run in this folder) |
