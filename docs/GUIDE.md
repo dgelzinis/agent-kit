@@ -4,7 +4,7 @@ How the kit is put together, how to use it day to day, and how changes reach you
 
 ## 1. What the kit is
 
-One folder (`~/GIT/agent-kit`, backed up to a private GitHub repo) that holds how you work with coding agents. Claude Code, Codex and Gemini all read it, in every project.
+One folder (`~/GIT/agent-kit`, or another location you choose) that holds shared working rules and workflows for your coding agents. Claude Code, Codex and Gemini all read it, in every project.
 
 There are three layers. Each one adds to the one above and wins where they disagree:
 
@@ -47,7 +47,7 @@ Notes:
 ## 3. First-time setup (once per computer)
 
 ```sh
-git clone https://github.com/dgelzinis/agent-kit.git ~/GIT/agent-kit   # skip on the computer where it was created
+git clone https://github.com/dgelzinis/agent-kit.git ~/GIT/agent-kit   # change the URL if using a fork
 cd ~/GIT/agent-kit && sh install.sh
 brew install gh && gh auth login                                        # if not done yet
 ```
