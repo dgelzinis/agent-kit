@@ -29,11 +29,15 @@ The kit is linked into supported agent environments rather than copied. Updating
 
 ## Supported coding agents
 
-| Agent | Instructions | Skills |
+| Agent | Global instructions installed by the kit | Skill discovery |
 |---|---|---|
-| Claude Code | `CLAUDE.md` / `AGENTS.md` integration | Slash-command skills and optional reviewer subagent |
-| OpenAI Codex | `AGENTS.md` | Skills via the shared agent skills directory |
-| Gemini CLI | `GEMINI.md` | Skills via the shared agent skills directory |
+| Claude Code | `~/.claude/CLAUDE.md` | `~/.claude/skills/`; invoke with `/k-…` |
+| OpenAI Codex | `~/.codex/AGENTS.md` | `~/.agents/skills/`; use `$k-…` or `/skills` |
+| Gemini CLI | `~/.gemini/GEMINI.md` | `~/.agents/skills/`; inspect with `gemini skills list --all` or `/skills list` |
+
+All 15 skill entry files were checked for valid `name` and `description` frontmatter, with names matching their skill directories. The installer uses the documented user-level skill locations, including the shared `~/.agents/skills/` location supported by Codex and Gemini CLI.
+
+The skill format and discovery paths follow the vendors' published conventions: [Claude Code skills](https://code.claude.com/docs/en/skills), [Codex skills](https://learn.chatgpt.com/docs/build-skills), and [Gemini CLI Agent Skills](https://geminicli.com/docs/cli/skills/). The installer smoke test does not launch the agent applications, so verify skill visibility in each installed client after installation.
 
 The workflows are plain Markdown and shell scripts. Some integrations are agent-specific; the core guidance is not tied to a single model provider.
 
