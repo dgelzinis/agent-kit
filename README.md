@@ -27,7 +27,7 @@ Agent Kit uses three layers. Project-specific instructions take precedence where
 
 The kit is linked into supported agent environments rather than copied. Updating a skill or shared rule makes it available in the next agent session.
 
-## Supported coding agents
+## Coding agent integrations
 
 | Agent | Global instructions installed by the kit | Skill discovery |
 |---|---|---|
@@ -39,7 +39,7 @@ All 15 skill entry files were checked for valid `name` and `description` frontma
 
 The skill format and discovery paths follow the vendors' published conventions: [Claude Code skills](https://code.claude.com/docs/en/skills), [Codex skills](https://learn.chatgpt.com/docs/build-skills), and [Gemini CLI Agent Skills](https://geminicli.com/docs/cli/skills/). The installer smoke test does not launch the agent applications, so verify skill visibility in each installed client after installation.
 
-The workflows are plain Markdown and shell scripts. Some integrations are agent-specific; the core guidance is not tied to a single model provider.
+Agent Kit's core workflows are plain Markdown and shell scripts. Claude Code and Gemini CLI have been manually tested by the maintainer. Codex integration is documented but has not been runtime-tested by the maintainer; treat it as experimental until independently verified.
 
 ## Quick start
 
