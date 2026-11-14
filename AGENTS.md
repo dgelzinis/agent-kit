@@ -100,7 +100,7 @@ A project may add its own skills in `.agents/skills/` under new names; do not co
 ## Lessons and friction (how the kit improves)
 - **Lessons:** when a bug or mistake teaches something beyond the single issue, write symptom → cause → fix → prevention on the issue and add the label `lesson`. Before working in an area, search past lessons: `gh issue list --label lesson --state all --search "<area>"`.
 - **Where a lesson ends up:** this project's code → a test or lint rule (else one line in the project's Rules); a technology → its stack pack; how agents work → this kit. `/ka-retro` proposes the promotion; the owner approves.
-- **Friction:** when a kit rule or skill is unclear, wrong, or conflicts with the project — or the owner corrects you on how to work — open an issue: `gh issue create -R dgelzinis/agent-kit --label friction --title "<skill or rule>: <problem>" --body "<what happened, project, what would have helped>"`. One line of evidence is enough. Then continue with the owner's instruction.
+- **Friction:** when a kit rule or skill is unclear, wrong, or conflicts with the project — or the owner corrects you on how to work — open an issue: `gh issue create -R <owner>/<agent-kit-repo> --label friction --title "<skill or rule>: <problem>" --body "<what happened, project, what would have helped>"` (replace the repository placeholder with your fork or configured upstream). One line of evidence is enough. Then continue with the owner's instruction.
 
 ## Parallel work (when `/k-lead` split an issue)
 - Work only in your own worktree and on your own sub-issue.
