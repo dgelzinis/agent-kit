@@ -49,13 +49,16 @@ The workflows are plain Markdown and shell scripts. Some integrations are agent-
 
 ### Install
 
-Clone the repository to a location you control:
+Clone it to the default location used by the included skills and templates:
 
 ```sh
+mkdir -p ~/GIT
 git clone https://github.com/dgelzinis/agent-kit.git ~/GIT/agent-kit
 cd ~/GIT/agent-kit
 sh install.sh
 ```
+
+The current skill instructions refer to `~/GIT/agent-kit`. If you choose a different location, update those references before relying on the workflows.
 
 The installer links the shared rules and skills into supported agent directories, installs the `kit` helper, and merges Claude Code permission rules into its settings.
 
