@@ -93,7 +93,7 @@ It also stops when something is unclear, a safety rule or the hook blocks it, it
 
 ## 6. All commands
 
-Kit skills use two prefixes: `k-` for doing work and `ka-` for administering the kit and a project's setup (`ka-retro` is listed only inside the agent-kit repo). The prefix means a skill cannot collide with a tool's built-in commands (plain `/review`, `/plan`, `/debug`, `/security-review` are built-ins that do something else). Claude Code: `/k-<name>` (type `/k-` or `/ka-` to see them). Codex: `$k-<name>`, or pick from `/skills`. Gemini CLI: say "activate the k-<name> skill" (it asks permission; check with `/skills list`). Any other agent: tell it to read `~/GIT/agent-kit/skills/k-<name>/SKILL.md` and follow it. To look them up: `kit help` in a terminal, the cheat sheet at the top of `README.md`, or ask the agent "what can the kit do?".
+Kit skills use two prefixes: `k-` for doing work and `ka-` for administering the kit and a project's setup (`ka-retro` is listed only inside the agent-kit repo). The prefix keeps kit skills distinct from built-in commands. Claude Code: invoke `/k-<name>` (type `/k-` or `/ka-` to browse). Codex: use `$k-<name>` or `/skills`. Gemini CLI: skills are discovered and activated on demand; inspect them with `gemini skills list --all` or `/skills list`, then ask Gemini to use a named skill if you want to direct it. The installer links skills into `~/.claude/skills/` and `~/.agents/skills/`, which are documented user-level locations for Claude Code, Codex and Gemini CLI. Any other agent: tell it to read `~/GIT/agent-kit/skills/k-<name>/SKILL.md` and follow it. To look them up: `kit help` in a terminal, the cheat sheet at the top of `README.md`, or ask the agent "what can the kit do?".
 
 | Command | Use it for |
 |---|---|
