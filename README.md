@@ -14,11 +14,12 @@ Write it once here; every project and every tool picks it up. Deeper detail for 
 6. [Using it in each tool](#using-it-in-each-tool)
 7. [Making a project different](#making-a-project-different)
 8. [What is enforced](#what-is-enforced)
-9. [Parallel work with several agents](#parallel-work-with-several-agents)
-10. [Lessons, measuring and improving](#lessons-measuring-and-improving)
-11. [Changing the kit](#changing-the-kit)
-12. [What's in this folder](#whats-in-this-folder)
-13. [Troubleshooting](#troubleshooting)
+9. [Being found: marketing, SEO and GEO](#being-found-marketing-seo-and-geo)
+10. [Parallel work with several agents](#parallel-work-with-several-agents)
+11. [Lessons, measuring and improving](#lessons-measuring-and-improving)
+12. [Changing the kit](#changing-the-kit)
+13. [What's in this folder](#whats-in-this-folder)
+14. [Troubleshooting](#troubleshooting)
 
 ## How it works
 
@@ -61,6 +62,7 @@ Two prefixes: **`k-` for doing work, `ka-` for administering the kit and a proje
 | want code written or changed: a feature (`build`), a bug (`fix`), a cleanup (`refactor`), a table or column (`database`) | `/k-code` (it picks the mode; or say `/k-code fix`) |
 | want a screen designed before it is built, design options, a check of how something looks, or a design system created or changed | `/k-design` (modes: `design`, `check`, `system`) |
 | need text: headlines, buttons, emails, posts | `/k-content` |
+| want the product found: marketing, SEO, visibility in AI answers | `/k-marketing` (modes: `audit`, `plan`, `page`, `measure`) |
 | touched sign-in, payments, user data or AI, or are about to release (the other skills also call it by themselves) | `/k-security` |
 | stop for the day or mid-task | `/k-handoff` |
 | want a new version out | `/k-release` |
@@ -159,6 +161,25 @@ Change the look everywhere:
 **Text**
 ```
 /k-content three options for the headline on the pricing page
+```
+
+**Marketing, SEO and visibility in AI answers**
+
+How findable is the site today, and what should be fixed first:
+```
+/k-marketing audit the marketing site
+```
+A direction: who to reach and which searches and questions to win:
+```
+/k-marketing plan for couples who manage money together
+```
+One page built to win one search:
+```
+/k-marketing page for "how to track net worth as a couple"
+```
+What is working (you provide the search console or analytics export if the agent has no access):
+```
+/k-marketing measure the last 30 days
 ```
 
 **Security**
@@ -308,6 +329,10 @@ Every skill reads its block first. Settings add steps or tighten rules; they nev
 
 Bypass the hook only when you mean it: `KIT_ALLOW_MAIN=1 git commit …` or `KIT_ALLOW_SECRET=1 git commit …`. A test fixture that must contain a key-shaped string gets the comment `kit:allow-secret` on that line. Agents are told never to bypass it without your OK.
 
+## Being found: marketing, SEO and GEO
+
+`/k-marketing` is the visibility expert, in four modes: `audit` (how findable is the site today, and what to fix), `plan` (who to reach and which searches and questions to win), `page` (one page built for one search intent) and `measure` (what is working, from real data). It proposes and checks; `/k-content`, `/k-design` and `/k-code` build. It only does honest marketing, searches the web for current facts, never publishes anything itself and never promises a ranking. Its knowledge pack, `stacks/seo-geo.md`, follows the search engines' own guidance and treats `llms.txt` and "schema for AI" as unproven. Details and sources: [docs/GUIDE.md](docs/GUIDE.md#8-being-found-marketing-seo-and-geo-k-marketing).
+
 ## Parallel work with several agents
 
 Large tasks get a lead automatically: when a plan comes out as size L, the agent switches to `/k-lead` and shows you a split into 2–4 parts that do not touch the same files (you can also call `/k-lead #12` yourself). With the split it asks one question: run the workers automatically, or will you drive them?
@@ -342,10 +367,10 @@ When Claude edits the kit from a cloud session it cannot overwrite `AGENTS.md` (
 | Path | What it is |
 |---|---|
 | `AGENTS.md` | Global rules for every agent in every project |
-| `skills/k-*/` | The 12 work skills, linked into every tool. A skill with modes keeps each mode's steps in `modes/<mode>.md` beside its `SKILL.md` |
+| `skills/k-*/` | The 13 work skills, linked into every tool. A skill with modes keeps each mode's steps in `modes/<mode>.md` beside its `SKILL.md` |
 | `skills/ka-*/` | The project admin skill `ka-project` (modes `setup`, `tune`), linked into every tool |
 | `admin/ka-*/SKILL.md` | Kit-only admin skills (`ka-retro`); `install.sh` links them into this repo's own `.claude/skills` and `.agents/skills`, so they appear only when you work here |
-| `stacks/` | Knowledge packs, each naming the industry standard and its source. Technology: `supabase`, `react-vite`, `node-express`, `nextjs`. Problem: `code` and `ux` (always), `testing`, `security`, `api`, `payments-stripe`, `ai-llm`. `stacks/README.md` says which to read when |
+| `stacks/` | Knowledge packs, each naming the industry standard and its source. Technology: `supabase`, `react-vite`, `node-express`, `nextjs`. Problem: `code` and `ux` (always), `testing`, `security`, `api`, `payments-stripe`, `ai-llm`, `seo-geo`. `stacks/README.md` says which to read when |
 | `claude/agents/reviewer.md` | The reviewer as a Claude Code subagent |
 | `hooks/pre-commit` | The pre-commit check installed by `kit hooks` |
 | `bin/kit`, `bin/kit-stats.mjs` | The `kit` terminal helper |

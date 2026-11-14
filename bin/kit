@@ -21,7 +21,7 @@ if [ "$cmd" = help ] || [ -z "$cmd" ]; then
   echo ""
   echo "WORK (k-): in any project"
   seen=""
-  for n in next task plan code design content ship review security release lead handoff; do
+  for n in next task plan code design content marketing ship review security release lead handoff; do
     f="$kit/skills/k-$n/SKILL.md"; [ -f "$f" ] && { line "$f"; seen="$seen k-$n"; }
   done
   for f in "$kit"/skills/k-*/SKILL.md; do

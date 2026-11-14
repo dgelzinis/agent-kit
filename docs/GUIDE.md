@@ -109,6 +109,7 @@ Kit skills use two prefixes: `k-` for doing work and `ka-` for administering the
 | `/k-security` | Security review of a change or the whole app |
 | `/k-design` | UI and UX: `design` a screen first (flow, states, mockup), `check` the built result after, `system` to create or revise the design system |
 | `/k-content` | Text in the project's voice, with options |
+| `/k-marketing` | Visibility: marketing, SEO and GEO. `audit` what is findable, `plan` what to win, `page` for one search intent, `measure` what works |
 | `/ka-project` | `setup`: bring a repo onto the kit. `tune`: create or change its Skill settings, with questions |
 | `/ka-retro` | Monthly kit improvement (run in this folder) |
 | `kit work <n>` / `kit done <n>` / `kit list` | Worktrees for parallel agents |
@@ -141,7 +142,41 @@ Voice: docs/brand/brand-strategy.md (Brand Voice, Terminology). Calm, plain, nev
 
 Mode (product / prototype / sandbox) sets the overall strictness; Skill settings fine-tune single skills inside it.
 
-## 8. Lessons, friction and improving the kit
+## 8. Being found: marketing, SEO and GEO (`/k-marketing`)
+
+`/k-marketing` is the visibility expert. It covers marketing, SEO (being found in search engines) and GEO (being cited or named in AI answers). It proposes and checks; the pages themselves are built through the normal flow, with `/k-content` for the words, `/k-design` for the layout and `/k-code` for the code.
+
+| Mode | Use it when you want… | What you get |
+|---|---|---|
+| `audit` | to know how findable the site or a page is today | A report, most valuable first: what blocks being found, what would win real searches, housekeeping, and what is not worth doing |
+| `plan` | a direction | Who to reach, which searches and questions to win, which pages to build in what order, where to be present beyond the site, a rhythm you can sustain, and how it will be measured |
+| `page` | one page that wins one search or question | A brief (title, outline, the direct answer first, proof, call to action), then the page built and checked |
+| `measure` | to know what is working | Search, AI-assistant and conversion numbers against the baseline; keep, improve or stop; the next three actions |
+
+**Examples**
+```
+/k-marketing audit the marketing site
+/k-marketing plan for couples who manage money together
+/k-marketing page for "how to track net worth as a couple"
+/k-marketing measure the last 30 days
+```
+
+**Rules built in**
+- Honest marketing only: no invented numbers, reviews, testimonials or comparisons; no planted mentions, link schemes or keyword stuffing.
+- It searches the web for current facts (keywords, competitors, the engines' guidance) rather than relying on memory, and says where it found them.
+- It never publishes, posts, emails or submits anything itself. You get the text and the steps.
+- No promises: nobody can guarantee a ranking or an AI citation. It gives a direction and a way to measure.
+- For `measure` it needs real data. If the agent cannot see your search console or analytics, it tells you which export to provide.
+
+**What the knowledge pack (`stacks/seo-geo.md`) is based on**, as of November 2026:
+- Google states that its AI features (AI Overviews, AI Mode) use the same index and ranking systems as Search, so doing SEO well is how to appear there, and that site owners can ignore `llms.txt` files, content chunking, AI-specific rewriting, inauthentic brand mentions and over-reliance on structured data for AI. Source: [Optimizing your website for generative AI features on Google Search](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide).
+- Other AI assistants (ChatGPT, Perplexity and others) may weigh signals differently, and the evidence for GEO-specific tactics is contested: vendors report gains from `llms.txt`, independent reviews find AI crawlers mostly ignore it.
+- So the pack puts fundamentals first (useful original content, pages crawlers can read, the answer first, fresh and dated content, original data, real presence on sites people trust) and marks `llms.txt` and "schema for AI" as unproven: harmless, never the plan.
+- GEO changes fast. `/ka-retro` re-checks this pack against current official guidance, and the skill itself searches before advising.
+
+**Per project.** Run `/ka-project tune marketing` once. It records the audience, markets and languages, the positioning, the project's own SEO or marketing strategy document, the channels in use and whether the agent can see search data, under `### /k-marketing` in the project's Skill settings.
+
+## 9. Lessons, friction and improving the kit
 
 - **Lessons:** when a bug teaches something general, the agent writes symptom → cause → fix → prevention on the issue and labels it `lesson`. Agents search past lessons before working in an area (`gh issue list --label lesson --state all --search "<area>"`).
 - **Where a lesson ends up:** project code → a test or lint rule (else one line in the project's Rules); a technology → its stack pack; how agents work → this kit. Prefer enforcing over writing down.
@@ -149,7 +184,7 @@ Mode (product / prototype / sandbox) sets the overall strictness; Skill settings
 - **Measure:** `kit stats --all` shows merged PRs, hours to merge, PR size, review blockers, CI failures, bugs, lessons and security findings per project.
 - **Improve:** once a month, start an agent in this folder and run `/ka-retro`. It measures, reads lessons and friction, checks whether last month's changes helped, and opens a PR with at most 3 changes plus a `retro` issue with next month's targets. You approve. It never loosens the safety rules.
 
-## 9. Enforcement (rules the computer checks)
+## 10. Enforcement (rules the computer checks)
 
 Written rules get skipped sometimes. These are enforced:
 
@@ -163,7 +198,7 @@ Written rules get skipped sometimes. These are enforced:
 
 The hook works for every tool and for you. Bypass only when you mean it: `KIT_ALLOW_MAIN=1 git commit …` or `KIT_ALLOW_SECRET=1 git commit …`. A test fixture that must contain a key-shaped string gets the comment `kit:allow-secret` on that line. The hook lives in `.git/hooks`, so run `kit hooks` once per clone.
 
-## 10. Changing the kit yourself
+## 11. Changing the kit yourself
 
 - Edit a skill or rule → save → commit and push. Done.
 - New skill → `skills/k-<name>/SKILL.md` (work), `skills/ka-<name>/SKILL.md` (project admin) or `admin/ka-<name>/SKILL.md` (kit-only, linked just inside this repo) with `name` and `description` at the top, add it to the table in `AGENTS.md` → Skills, run `sh install.sh`.

@@ -55,6 +55,7 @@ Work skills (`k-`), in `~/GIT/agent-kit/skills/<name>/SKILL.md`:
 | `/k-code` | the code expert, in one of four modes: `build` a feature, `fix` a bug (failing test first), `refactor` (no behaviour change), `database` (safe migration) |
 | `/k-design` | UI and UX: design a screen before building, check it after |
 | `/k-content` | text in the project's voice |
+| `/k-marketing` | visibility: marketing, SEO and GEO, in four modes: `audit` what is findable today, `plan` who to reach and what to win, `page` for one search intent, `measure` what works |
 | `/k-ship` | verify and open a pull request |
 | `/k-review` | independent review with a fresh context |
 | `/k-security` | security review. Always its own independent skill, never a mode of another; any skill calls it when a change touches sign-in, permissions, payments, personal data, secrets or AI calls |
@@ -79,7 +80,7 @@ A project may add its own skills in `.agents/skills/` under new names; do not co
 ## Knowledge packs
 `~/GIT/agent-kit/stacks/` holds short packs with the industry standard (named, with its source) and the rules that matter for a technology or a problem. Before working in an area, read the packs for it; the table in `~/GIT/agent-kit/stacks/README.md` says which.
 - **Technology packs** are the ones the project lists (`Stacks: react-vite, node-express, supabase`).
-- **Problem packs** are chosen by what the change touches: `code` (always), `ux` (anything users see), `testing`, `security`, `api`, `payments-stripe`, `ai-llm`.
+- **Problem packs** are chosen by what the change touches: `code` (always), `ux` (anything users see), `testing`, `security`, `api`, `payments-stripe`, `ai-llm`, `seo-geo` (public pages and anything about being found).
 - Read only what you need. For exact syntax and version-specific behaviour, check the current official docs named in the pack's Standards line; do not rely on memory for fast-moving tools.
 - The project's own rules win over a pack. A lesson that applies to the technology or problem, not just the project, belongs in its pack. No pack for a technology you are working in → say so, and propose one.
 

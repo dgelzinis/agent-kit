@@ -15,12 +15,13 @@ Every pack starts with a **Standards** line naming the authoritative sources. To
 | a backend route or endpoint | `api.md`, plus the backend's technology pack |
 | payments, subscriptions, plans | `payments-stripe.md` |
 | a feature that calls an AI model | `ai-llm.md` |
+| a public page, marketing, anything about being found in search or AI answers | `seo-geo.md` |
 | React / Vite frontend | `react-vite.md` |
 | Node / Express backend | `node-express.md` |
 | Supabase / PostgreSQL | `supabase.md` |
 | a Next.js site | `nextjs.md` |
 
-Technology packs are listed per project in its `AGENTS.md` (`Stacks: react-vite, node-express, supabase`). Problem packs (`code`, `ux`, `testing`, `security`, `api`, `payments-stripe`, `ai-llm`) are chosen by what the change touches. Read only the packs you need.
+Technology packs are listed per project in its `AGENTS.md` (`Stacks: react-vite, node-express, supabase`). Problem packs (`code`, `ux`, `testing`, `security`, `api`, `payments-stripe`, `ai-llm`, `seo-geo`) are chosen by what the change touches. Read only the packs you need.
 
 ## Keeping them good
 - A project lesson that applies to the technology or problem, not just that project, goes into its pack.
