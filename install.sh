@@ -10,6 +10,9 @@
 # Anything it would replace is first copied to ~/.agent-kit-backup/<time>/.
 set -e
 
+# Fail before changing the machine if the installer dependency is missing.
+command -v node >/dev/null 2>&1 || { echo "agent-kit: Node.js is required by install.sh. Install Node.js and run this script again."; exit 1; }
+
 KIT=$(cd "$(dirname "$0")" && pwd)
 STAMP=$(date +%Y%m%d-%H%M%S)
 BACKUP="$HOME/.agent-kit-backup/$STAMP"
@@ -81,6 +84,7 @@ for f in "$KIT"/claude/agents/*.md; do
 done
 
 echo "Claude Code permissions (~/.claude/settings.json): block secrets, allow reading the kit"
+backup "$HOME/.claude/settings.json"
 node - "$HOME/.claude/settings.json" "$KIT" "$HOME" <<'EOF'
 const fs = require('fs');
 const file = process.argv[2];
