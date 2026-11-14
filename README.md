@@ -43,7 +43,7 @@ The workflows are plain Markdown and shell scripts. Some integrations are agent-
 
 - macOS or Linux with a POSIX-compatible shell
 - Git
-- Node.js for the `kit stats` helper
+- Node.js (required by the installer and `kit stats` helper)
 - GitHub CLI (`gh`) for issue, pull-request and workflow commands
 - One or more supported coding agents
 
@@ -138,4 +138,4 @@ Please do not report vulnerabilities in a public issue. See [SECURITY.md](SECURI
 
 ## License
 
-A license has not yet been selected for this repository. Until a license file is added, no permission is granted to copy, modify, redistribute or use this project beyond applicable legal exceptions. Check back for the licensing decision before adopting or redistributing it.
+Agent Kit is licensed under the [MIT License](LICENSE).
