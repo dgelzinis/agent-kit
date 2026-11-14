@@ -4,7 +4,7 @@ How the kit is put together, how to use it day to day, and how changes reach you
 
 ## 1. What the kit is
 
-One folder (`~/GIT/agent-kit`, or another location you choose) that holds shared working rules and workflows for your coding agents. Claude Code, Codex and Gemini all read it, in every project.
+One folder (`~/GIT/agent-kit`) that holds shared working rules and workflows for your coding agents. The current skills and templates use this canonical path; choosing a different clone location requires updating those references. Claude Code, Codex and Gemini all read it, in every project.
 
 There are three layers. Each one adds to the one above and wins where they disagree:
 
@@ -56,7 +56,7 @@ What `install.sh` does:
 1. Links the global rules into Claude Code, Codex and Gemini (backing up any existing file).
 2. Links every skill into `~/.agents/skills` and `~/.claude/skills`, one link per skill, so skills you installed yourself stay.
 3. Links the reviewer subagent for Claude Code.
-4. Adds to `~/.claude/settings.json` (merged, never overwritten): blocks reading `.env`, `private/` and key files; allows reading this kit.
+4. Backs up the existing `~/.claude/settings.json`, then merges permission rules: blocks reading `.env`, `private/` and key files; allows reading this kit. Existing settings are preserved.
 5. Installs the `kit` command to `~/.local/bin`.
 
 Labels used by the workflow, once per repo (`/ka-project setup` does this for projects):
